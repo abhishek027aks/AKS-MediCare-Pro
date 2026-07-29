@@ -206,18 +206,22 @@ lib/
 
 ---
 
-# 🏗 System Architecture
+## 🏗 System Architecture
 
 <p align="center">
-<img src="assets/diagrams/architecture.png" width="95%">
+  <img src="assets/diagrams/architecture.png"
+       alt="System Architecture"
+       width="100%">
 </p>
 
 ---
 
-# 🗄 Database ER Diagram
+## 🗄 Database ER Diagram
 
 <p align="center">
-<img src="assets/diagrams/er_diagram.png" width="95%">
+  <img src="assets/diagrams/er_diagram.png"
+       alt="Database ER Diagram"
+       width="100%">
 </p>
 
 ---
