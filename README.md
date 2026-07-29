@@ -1,58 +1,142 @@
-<div align="center">
-
 # 🏥 AKS MediCare Pro
 
-### Enterprise Offline-First Hospital & Clinic Management System
+> Enterprise Offline-First Hospital & Clinic Management System built with Flutter.
 
-<p>
-A modern, secure and scalable Hospital ERP built with Flutter for
-Windows and Android.
-</p>
-
-<p>
-
-![Flutter](https://img.shields.io/badge/Flutter-3.0+-02569B?style=for-the-badge&logo=flutter&logoColor=white)
-![Dart](https://img.shields.io/badge/Dart-3.0+-0175C2?style=for-the-badge&logo=dart&logoColor=white)
-![SQLite](https://img.shields.io/badge/SQLite-Database-003B57?style=for-the-badge&logo=sqlite&logoColor=white)
-![Windows](https://img.shields.io/badge/Windows-Supported-0078D4?style=for-the-badge&logo=windows)
-![Android](https://img.shields.io/badge/Android-Supported-3DDC84?style=for-the-badge&logo=android&logoColor=white)
-![Material 3](https://img.shields.io/badge/Material_3-Enabled-6750A4?style=for-the-badge)
-![MIT License](https://img.shields.io/badge/License-MIT-success?style=for-the-badge)
-
-</p>
+![Flutter](https://img.shields.io/badge/Flutter-3.x-blue?logo=flutter)
+![Dart](https://img.shields.io/badge/Dart-3.x-blue?logo=dart)
+![Material3](https://img.shields.io/badge/Material-3-green)
+![SQLite](https://img.shields.io/badge/Database-SQLite-blue)
+![Platform](https://img.shields.io/badge/Platform-Android%20%7C%20Windows-success)
+![License](https://img.shields.io/badge/License-MIT-yellow)
 
 ---
 
-### 🚀 Build Modern Hospitals with Flutter
+## 📖 Overview
 
-Offline First • Windows • Android • SQLite • Material 3 • Future LAN Sync
+AKS MediCare Pro is a modern Hospital & Clinic Management System developed using Flutter.
 
-</div>
+The application follows an **Offline-First Architecture**, ensuring hospitals can continue working even without an internet connection.
 
----
-
-# 📖 About AKS MediCare Pro
-
-AKS MediCare Pro is an Enterprise-grade Hospital & Clinic Management System developed using Flutter.
-
-The application is designed to help hospitals and clinics efficiently manage their daily operations through a modern, fast and secure interface.
-
-The software follows an **Offline-First** architecture using SQLite, allowing hospitals to continue working even without an internet connection.
-
-Future releases will introduce LAN synchronization, cloud support, patient portals, doctor portals, and AI-powered healthcare features.
+The project is designed to be scalable, secure, and suitable for clinics, hospitals, diagnostic centers, and healthcare organizations.
 
 ---
 
-# 🎯 Vision
+# ✨ Features
 
-Our mission is to provide an affordable, professional and scalable Hospital ERP solution that works for:
-
-- 🏥 Hospitals
-- 🏥 Multi-Speciality Clinics
-- 👨‍⚕️ Individual Doctors
-- 🩺 Diagnostic Centers
-- 💊 Pharmacies
-
-while maintaining simplicity, speed, security and future scalability.
+- 👨‍⚕️ Doctor Management
+- 🧑‍🤝‍🧑 Patient Management
+- 🛏 IPD Management
+- 🩺 OPD Management
+- 💊 Pharmacy
+- 🧪 Laboratory
+- 🩻 Radiology
+- 💳 Billing
+- 📦 Inventory
+- 👥 HR Management
+- 📊 Reports
+- 💾 Backup & Restore
+- 🔐 Secure Authentication
+- 🌐 Future LAN Sync
+- ☁️ Future Cloud Sync
+- 🤖 AI Integration (Planned)
 
 ---
+
+# 🛠 Technology Stack
+
+- Flutter
+- Dart
+- Material 3
+- Riverpod
+- GoRouter
+- SQLite
+- Clean Architecture
+- Repository Pattern
+
+---
+
+# 📱 Supported Platforms
+
+| Platform | Status |
+|----------|--------|
+| Android | ✅ |
+| Windows | ✅ |
+| Linux | 🚧 |
+| Web | 🚧 |
+| macOS | 🚧 |
+| iOS | 🚧 |
+
+---
+
+# 📂 Project Structure
+
+```text
+lib/
+ ├── app/
+ ├── core/
+ ├── database/
+ ├── features/
+ ├── shared/
+ └── main.dart
+```
+
+---
+
+# 🚀 Getting Started
+
+```bash
+git clone https://github.com/abhishek027aks/AKS-MediCare-Pro.git
+
+cd AKS-MediCare-Pro
+
+flutter pub get
+
+flutter run
+```
+
+---
+
+# 🗺️ Roadmap
+
+- ✅ Foundation
+- 🚧 Authentication
+- ⏳ Patient Module
+- ⏳ Doctor Module
+- ⏳ OPD
+- ⏳ IPD
+- ⏳ Laboratory
+- ⏳ Pharmacy
+- ⏳ Billing
+- ⏳ Inventory
+- ⏳ Reports
+- ⏳ Backup
+- ⏳ LAN Sync
+- ⏳ Cloud Sync
+- ⏳ AI Integration
+
+---
+
+# 🤝 Contributing
+
+Contributions are welcome.
+
+Please read **CONTRIBUTING.md** before submitting pull requests.
+
+---
+
+# 📄 License
+
+This project is licensed under the MIT License.
+
+---
+
+# 👨‍💻 Developer
+
+**Abhishek Kumar Singh**
+
+GitHub:
+https://github.com/abhishek027aks
+
+---
+
+⭐ If you like this project, please give it a Star.
