@@ -1,0 +1,18 @@
+import 'package:go_router/go_router.dart';
+
+import '../features/auth/presentation/screens/splash_screen.dart';
+import '../features/dashboard/presentation/screens/dashboard_screen.dart';
+
+final GoRouter appRouter = GoRouter(
+  initialLocation: '/',
+  routes: [
+    GoRoute(
+      path: '/',
+      builder: (context, state) => const SplashScreen(),
+    ),
+    GoRoute(
+      path: '/dashboard',
+      builder: (context, state) => const DashboardScreen(),
+    ),
+  ],
+);
