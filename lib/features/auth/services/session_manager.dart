@@ -2,7 +2,7 @@ import 'dart:convert';
 
 import 'package:shared_preferences/shared_preferences.dart';
 
-import '../data/models/user_model.dart';
+import '../../user_management/models/user_model.dart';
 
 class SessionManager {
   SessionManager._();

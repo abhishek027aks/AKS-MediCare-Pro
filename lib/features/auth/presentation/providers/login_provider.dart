@@ -1,6 +1,6 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../../data/models/user_model.dart';
+import '../../../user_management/models/user_model.dart';
 import '../../services/authentication_service.dart';
 
 /// ===============================

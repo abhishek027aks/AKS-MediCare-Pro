@@ -1,4 +1,4 @@
-import '../data/models/user_model.dart';
+import '../../user_management/models/user_model.dart';
 import '../data/repositories/user_repository.dart';
 import 'session_manager.dart';
 
