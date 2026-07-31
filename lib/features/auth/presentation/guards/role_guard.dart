@@ -1,4 +1,4 @@
-import '../../data/models/user_model.dart';
+import '../../../user_management/models/user_model.dart';
 
 class RoleGuard {
   RoleGuard._();

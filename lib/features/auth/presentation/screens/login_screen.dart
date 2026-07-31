@@ -1,20 +1,23 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../../../core/colors.dart';
 import '../../../../shared/widgets/app_button.dart';
+import '../providers/auth_provider.dart';
+import '../providers/auth_state_provider.dart';
 
-class LoginScreen extends StatefulWidget {
+class LoginScreen extends ConsumerStatefulWidget {
   const LoginScreen({super.key});
 
   @override
-  State<LoginScreen> createState() => _LoginScreenState();
+  ConsumerState<LoginScreen> createState() => _LoginScreenState();
 }
 
-class _LoginScreenState extends State<LoginScreen> {
+class _LoginScreenState extends ConsumerState<LoginScreen> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
-  final TextEditingController _emailController =
+  final TextEditingController _usernameController =
       TextEditingController();
 
   final TextEditingController _passwordController =
@@ -22,26 +25,45 @@ class _LoginScreenState extends State<LoginScreen> {
 
   bool _obscurePassword = true;
   bool _rememberMe = false;
-  bool _isLoading = false;
+
+  @override
+  void initState() {
+    super.initState();
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _restoreSession();
+    });
+  }
 
   @override
   void dispose() {
-    _emailController.dispose();
+    _usernameController.dispose();
     _passwordController.dispose();
     super.dispose();
   }
 
-  String? _validateEmail(String? value) {
+  Future<void> _restoreSession() async {
+    await ref
+        .read(authProvider.notifier)
+        .restoreSession();
+
+    if (!mounted) return;
+
+    final authenticated =
+        ref.read(isAuthenticatedProvider);
+
+    if (authenticated) {
+      context.go('/dashboard');
+    }
+  }
+
+  String? _validateUsername(String? value) {
     if (value == null || value.trim().isEmpty) {
-      return 'Email is required';
+      return 'Username is required';
     }
 
-    final emailRegex = RegExp(
-      r'^[^@\s]+@[^@\s]+\.[^@\s]+$',
-    );
-
-    if (!emailRegex.hasMatch(value.trim())) {
-      return 'Enter a valid email';
+    if (value.trim().length < 3) {
+      return 'Enter valid username';
     }
 
     return null;
@@ -64,25 +86,40 @@ class _LoginScreenState extends State<LoginScreen> {
       return;
     }
 
-    setState(() {
-      _isLoading = true;
-    });
-
-    await Future.delayed(
-      const Duration(seconds: 2),
-    );
+    final success =
+        await ref.read(authProvider.notifier).login(
+              username: _usernameController.text.trim(),
+              password: _passwordController.text,
+            );
 
     if (!mounted) return;
 
-    setState(() {
-      _isLoading = false;
-    });
+    if (success) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Login Successful'),
+        ),
+      );
+      context.go('/dashboard');
+      return;
+    }
 
-    context.go('/dashboard');
+    final error =
+        ref.read(authErrorProvider);
+
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        behavior: SnackBarBehavior.floating,
+        content: Text(error),
+      ),
+    );
   }
 
   @override
   Widget build(BuildContext context) {
+    final isLoading =
+        ref.watch(authLoadingProvider);
+
     final bool isDesktop =
         MediaQuery.of(context).size.width >= 700;
 
@@ -144,14 +181,14 @@ class _LoginScreenState extends State<LoginScreen> {
                         const SizedBox(height: 32),
 
                         TextFormField(
-                          controller: _emailController,
+                          controller: _usernameController,
                           keyboardType:
-                              TextInputType.emailAddress,
-                          validator: _validateEmail,
+                              TextInputType.text,
+                          validator: _validateUsername,
                           decoration: const InputDecoration(
-                            labelText: 'Email',
+                            labelText: 'Username',
                             prefixIcon:
-                                Icon(Icons.email_outlined),
+                                Icon(Icons.person_outline),
                           ),
                         ),
 
@@ -223,8 +260,8 @@ class _LoginScreenState extends State<LoginScreen> {
                         AppButton(
                           text: 'Login',
                           icon: Icons.login,
-                          isLoading: _isLoading,
-                          onPressed: _login,
+                          isLoading: isLoading,
+                          onPressed: isLoading ? null : _login,
                         ),
 
                         const SizedBox(height: 24),
