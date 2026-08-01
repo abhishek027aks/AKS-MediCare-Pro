@@ -5,38 +5,50 @@
 | Version | Supported |
 |----------|-----------|
 | Latest | ✅ |
-| Older Releases | ❌ |
+| Older Versions | ❌ |
 
 ---
 
-## Reporting a Vulnerability
+# Reporting a Vulnerability
 
-If you discover a security vulnerability, please report it privately.
+Please do NOT open a public GitHub Issue for security vulnerabilities.
 
-Do NOT create a public GitHub issue.
+Instead, contact the maintainer privately.
 
-Contact:
+Maintainer
 
-**Maintainer**
 Abhishek Kumar Singh
 
-GitHub:
+GitHub
+
 https://github.com/abhishek027aks
 
 ---
 
-## Security Best Practices
+# Responsible Disclosure
 
-Please do not include:
+Please include:
 
-- API Keys
-- Passwords
-- Tokens
-- Private Credentials
-- Sensitive Medical Data
-
-inside GitHub Issues or Pull Requests.
+- Description
+- Steps to reproduce
+- Screenshots
+- Logs
+- Expected behavior
+- Suggested fix (optional)
 
 ---
 
-We appreciate responsible disclosure and will investigate all valid reports.
+# Security Best Practices
+
+Never upload:
+
+- API Keys
+- Database Credentials
+- Patient Records
+- Passwords
+- Tokens
+- Sensitive Medical Data
+
+---
+
+We appreciate responsible disclosure and will acknowledge valid reports.
