@@ -1,39 +1,73 @@
 # Code of Conduct
 
-## Our Pledge
+Welcome to **AKS MediCare Pro**.
 
-We as contributors and maintainers pledge to make participation in this project a harassment-free experience for everyone regardless of age, body size, disability, ethnicity, gender identity, nationality, race, religion, or experience level.
+We are committed to creating a welcoming, inclusive, and professional environment for everyone participating in this project.
 
-## Our Standards
+---
 
-Examples of behavior that contributes to a positive environment include:
+## Our Commitment
 
-- Being respectful and professional.
-- Welcoming constructive feedback.
-- Helping other contributors.
-- Respecting different opinions.
-- Focusing on what is best for the project.
+We pledge to make participation in this community a respectful, harassment-free, and collaborative experience for all contributors, regardless of:
 
-Examples of unacceptable behavior include:
+- Age
+- Disability
+- Ethnicity
+- Gender Identity
+- Nationality
+- Race
+- Religion
+- Sexual Orientation
+- Technical Experience
+
+---
+
+## Expected Behavior
+
+All contributors are expected to:
+
+- Be respectful and professional.
+- Welcome constructive feedback.
+- Respect differing opinions.
+- Collaborate in good faith.
+- Write clean and maintainable code.
+- Help improve documentation.
+- Report bugs responsibly.
+
+---
+
+## Unacceptable Behavior
+
+Examples include but are not limited to:
 
 - Harassment or discrimination.
 - Personal attacks.
-- Offensive comments.
+- Hate speech.
+- Threats.
 - Publishing private information.
-- Spam or disruptive behavior.
+- Spam.
+- Malicious code submissions.
+- Intentionally breaking builds.
 
-## Responsibilities
-
-Project maintainers are responsible for clarifying and enforcing standards of acceptable behavior.
+---
 
 ## Enforcement
 
-Instances of abusive behavior may be reported to the project maintainer.
+Project maintainers reserve the right to remove comments, commits, pull requests, issues, or contributors that violate this Code of Conduct.
 
-Project Maintainer:
+---
+
+## Reporting
+
+If you experience unacceptable behavior, please report it privately.
+
+Maintainer:
+
 **Abhishek Kumar Singh**
 
 GitHub:
 https://github.com/abhishek027aks
 
-All reports will be reviewed and investigated promptly.
+---
+
+Thank you for helping make AKS MediCare Pro a professional open-source project.
