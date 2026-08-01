@@ -1,23 +1,36 @@
 # Contributing to AKS MediCare Pro
 
-Thank you for your interest in contributing.
+Thank you for considering contributing.
 
-## Getting Started
+We welcome bug fixes, improvements, documentation updates, feature suggestions, and code contributions.
 
-1. Fork the repository.
-2. Clone your fork.
+---
+
+# Getting Started
+
+## Fork Repository
+
+Click the **Fork** button.
+
+Clone your fork:
 
 ```bash
-git clone https://github.com/your-username/AKS-MediCare-Pro.git
+git clone https://github.com/YOUR_USERNAME/AKS-MediCare-Pro.git
 ```
 
-3. Install dependencies.
+Move into project
+
+```bash
+cd AKS-MediCare-Pro
+```
+
+Install packages
 
 ```bash
 flutter pub get
 ```
 
-4. Run the project.
+Run
 
 ```bash
 flutter run -d windows
@@ -25,46 +38,73 @@ flutter run -d windows
 
 ---
 
-## Creating a Branch
+# Development Guidelines
 
-```bash
-git checkout -b feature/your-feature-name
-```
+Please follow:
+
+- Flutter Best Practices
+- Dart Style Guide
+- SOLID Principles
+- Clean Architecture
+- Riverpod State Management
+- Responsive UI
 
 ---
 
-## Commit Message Format
+# Commit Messages
+
+Use Conventional Commits.
 
 Examples:
 
 ```
 feat: add pharmacy module
-fix: resolve billing calculation bug
+fix: billing calculation
 docs: update README
-refactor: improve patient repository
+refactor: patient repository
+style: improve dashboard UI
 ```
 
 ---
 
-## Pull Requests
+# Pull Request Checklist
 
-Please ensure:
+Before opening a PR:
 
-- Code builds successfully.
-- flutter analyze passes.
-- flutter test passes.
-- Proper documentation is added.
-- Screenshots are attached if UI changes.
-
----
-
-## Coding Style
-
-- Follow Flutter official style guide.
-- Keep widgets reusable.
-- Write clean code.
-- Avoid duplicate logic.
+- flutter analyze passes
+- flutter test passes
+- No unnecessary files
+- Documentation updated
+- Screenshots included (if UI changes)
 
 ---
 
-Thank you for contributing ❤️
+# Branch Naming
+
+```
+feature/login
+
+feature/pharmacy
+
+bugfix/billing
+
+hotfix/dashboard
+
+docs/readme
+```
+
+---
+
+# Code Style
+
+- Write reusable widgets.
+- Keep methods small.
+- Avoid duplicate code.
+- Prefer composition.
+- Use meaningful names.
+
+---
+
+# Thank You
+
+Every contribution helps improve AKS MediCare Pro.
