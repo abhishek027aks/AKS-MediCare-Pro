@@ -1,0 +1,63 @@
+import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+
+import '../../../core/helpers/id_helper.dart';
+import '../data/repositories/opd_repository.dart';
+import '../models/opd_visit_model.dart';
+import '../widgets/opd_visit_form.dart';
+
+class AddOpdVisitScreen extends ConsumerStatefulWidget {
+  const AddOpdVisitScreen({super.key});
+
+  @override
+  ConsumerState<AddOpdVisitScreen> createState() => _AddOpdVisitScreenState();
+}
+
+class _AddOpdVisitScreenState extends ConsumerState<AddOpdVisitScreen> {
+  bool _isSaving = false;
+
+  Future<void> _saveVisit(OpdVisitModel visit) async {
+    setState(() => _isSaving = true);
+
+    try {
+      final visitNo = await IdHelper.generateVisitNumber();
+
+      await OpdRepository.instance.createVisit(visit.copyWith(visitNo: visitNo));
+
+      if (!mounted) return;
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Visit created successfully. Visit No: $visitNo'),
+          backgroundColor: Colors.green,
+        ),
+      );
+
+      Navigator.pop(context, true);
+    } catch (e) {
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(e.toString())),
+      );
+    } finally {
+      if (mounted) setState(() => _isSaving = false);
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: const Text('New OPD Visit'), centerTitle: true),
+      body: SafeArea(
+        child: SingleChildScrollView(
+          padding: const EdgeInsets.all(16),
+          child: OpdVisitForm(
+            onSave: _saveVisit,
+            isLoading: _isSaving,
+            onCancel: () => Navigator.pop(context),
+          ),
+        ),
+      ),
+    );
+  }
+}
