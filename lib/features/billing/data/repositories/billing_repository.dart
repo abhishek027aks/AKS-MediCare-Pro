@@ -1,4 +1,5 @@
 import '../../../../database/database_service.dart';
+import '../../../audit/data/repositories/audit_repository.dart';
 import '../../models/bill_model.dart';
 
 class BillingRepository {
@@ -16,7 +17,15 @@ class BillingRepository {
 
   Future<int> createBill(BillModel bill) async {
     try {
-      return await _database.insert(_table, bill.toMap());
+      final id = await _database.insert(_table, bill.toMap());
+
+      AuditRepository.instance.logAction(
+        module: 'Billing',
+        action: 'Create',
+        description: 'Created bill ${bill.invoiceNo} for ${bill.patientName} (₹${bill.totalAmount.toStringAsFixed(2)})',
+      );
+
+      return id;
     } catch (e) {
       throw Exception('Failed to create bill: $e');
     }
@@ -94,7 +103,17 @@ class BillingRepository {
     }
 
     try {
-      return await _database.update(_table, bill.toMap(), 'id = ?', [bill.id]);
+      final rows = await _database.update(_table, bill.toMap(), 'id = ?', [bill.id]);
+
+      if (rows > 0) {
+        AuditRepository.instance.logAction(
+          module: 'Billing',
+          action: 'Update',
+          description: 'Updated bill ${bill.invoiceNo} for ${bill.patientName}',
+        );
+      }
+
+      return rows;
     } catch (e) {
       throw Exception('Failed to update bill: $e');
     }
@@ -106,7 +125,17 @@ class BillingRepository {
 
   Future<int> deleteBill(int id) async {
     try {
-      return await _database.delete(_table, 'id = ?', [id]);
+      final rows = await _database.delete(_table, 'id = ?', [id]);
+
+      if (rows > 0) {
+        AuditRepository.instance.logAction(
+          module: 'Billing',
+          action: 'Delete',
+          description: 'Deleted bill (id: $id)',
+        );
+      }
+
+      return rows;
     } catch (e) {
       throw Exception('Failed to delete bill: $e');
     }

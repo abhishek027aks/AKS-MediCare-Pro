@@ -1,4 +1,5 @@
 import '../../../../database/database_service.dart';
+import '../../../audit/data/repositories/audit_repository.dart';
 import '../../models/lab_test_model.dart';
 
 class LabRepository {
@@ -16,7 +17,15 @@ class LabRepository {
 
   Future<int> createTest(LabTestModel test) async {
     try {
-      return await _database.insert(_table, test.toMap());
+      final id = await _database.insert(_table, test.toMap());
+
+      AuditRepository.instance.logAction(
+        module: 'Laboratory',
+        action: 'Create',
+        description: 'Ordered ${test.testName} for ${test.patientName} (${test.testNo})',
+      );
+
+      return id;
     } catch (e) {
       throw Exception('Failed to order lab test: $e');
     }
@@ -95,7 +104,17 @@ class LabRepository {
     }
 
     try {
-      return await _database.update(_table, test.toMap(), 'id = ?', [test.id]);
+      final rows = await _database.update(_table, test.toMap(), 'id = ?', [test.id]);
+
+      if (rows > 0) {
+        AuditRepository.instance.logAction(
+          module: 'Laboratory',
+          action: 'Update',
+          description: 'Updated lab test ${test.testNo} for ${test.patientName}',
+        );
+      }
+
+      return rows;
     } catch (e) {
       throw Exception('Failed to update lab test: $e');
     }
@@ -107,7 +126,17 @@ class LabRepository {
 
   Future<int> deleteTest(int id) async {
     try {
-      return await _database.delete(_table, 'id = ?', [id]);
+      final rows = await _database.delete(_table, 'id = ?', [id]);
+
+      if (rows > 0) {
+        AuditRepository.instance.logAction(
+          module: 'Laboratory',
+          action: 'Delete',
+          description: 'Deleted lab test (id: $id)',
+        );
+      }
+
+      return rows;
     } catch (e) {
       throw Exception('Failed to delete lab test: $e');
     }

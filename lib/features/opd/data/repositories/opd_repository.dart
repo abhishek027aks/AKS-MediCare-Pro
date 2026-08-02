@@ -1,4 +1,5 @@
 import '../../../../database/database_service.dart';
+import '../../../audit/data/repositories/audit_repository.dart';
 import '../../models/opd_visit_model.dart';
 
 class OpdRepository {
@@ -16,7 +17,15 @@ class OpdRepository {
 
   Future<int> createVisit(OpdVisitModel visit) async {
     try {
-      return await _database.insert(_table, visit.toMap());
+      final id = await _database.insert(_table, visit.toMap());
+
+      AuditRepository.instance.logAction(
+        module: 'OPD',
+        action: 'Create',
+        description: 'Created OPD visit ${visit.visitNo} for ${visit.patientName}',
+      );
+
+      return id;
     } catch (e) {
       throw Exception('Failed to create OPD visit: $e');
     }
@@ -100,12 +109,22 @@ class OpdRepository {
     }
 
     try {
-      return await _database.update(
+      final rows = await _database.update(
         _table,
         visit.toMap(),
         'id = ?',
         [visit.id],
       );
+
+      if (rows > 0) {
+        AuditRepository.instance.logAction(
+          module: 'OPD',
+          action: 'Update',
+          description: 'Updated OPD visit ${visit.visitNo} for ${visit.patientName}',
+        );
+      }
+
+      return rows;
     } catch (e) {
       throw Exception('Failed to update OPD visit: $e');
     }
@@ -117,7 +136,17 @@ class OpdRepository {
 
   Future<int> deleteVisit(int id) async {
     try {
-      return await _database.delete(_table, 'id = ?', [id]);
+      final rows = await _database.delete(_table, 'id = ?', [id]);
+
+      if (rows > 0) {
+        AuditRepository.instance.logAction(
+          module: 'OPD',
+          action: 'Delete',
+          description: 'Deleted OPD visit (id: $id)',
+        );
+      }
+
+      return rows;
     } catch (e) {
       throw Exception('Failed to delete OPD visit: $e');
     }

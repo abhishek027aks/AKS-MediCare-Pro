@@ -1,11 +1,18 @@
 import 'package:go_router/go_router.dart';
 
+import '../features/attendance/screens/add_attendance_screen.dart';
+import '../features/attendance/screens/attendance_list_screen.dart';
+import '../features/attendance/screens/hr_management_screen.dart';
+import '../features/audit/screens/audit_log_screen.dart';
 import '../features/auth/presentation/screens/login_screen.dart';
 import '../features/auth/presentation/screens/splash_screen.dart';
 import '../features/billing/screens/add_bill_screen.dart';
 import '../features/billing/screens/bill_list_screen.dart';
 import '../features/billing/screens/billing_management_screen.dart';
 import '../features/dashboard/presentation/screens/dashboard_screen.dart';
+import '../features/inventory/screens/add_inventory_item_screen.dart';
+import '../features/inventory/screens/inventory_item_list_screen.dart';
+import '../features/inventory/screens/inventory_management_screen.dart';
 import '../features/ipd/screens/add_ipd_admission_screen.dart';
 import '../features/ipd/screens/ipd_admission_list_screen.dart';
 import '../features/ipd/screens/ipd_management_screen.dart';
@@ -22,6 +29,9 @@ import '../features/pharmacy/screens/add_medicine_screen.dart';
 import '../features/pharmacy/screens/medicine_list_screen.dart';
 import '../features/pharmacy/screens/pharmacy_management_screen.dart';
 import '../features/reports/screens/reports_screen.dart';
+import '../features/staff/screens/add_staff_profile_screen.dart';
+import '../features/staff/screens/staff_management_screen.dart';
+import '../features/staff/screens/staff_profile_list_screen.dart';
 
 final GoRouter appRouter = GoRouter(
   initialLocation: '/',
@@ -123,10 +133,58 @@ final GoRouter appRouter = GoRouter(
       builder: (context, state) => const AddMedicineScreen(),
     ),
 
+    // Doctor / Nursing (Staff clinical profiles)
+    GoRoute(
+      path: '/staff',
+      builder: (context, state) => const StaffManagementScreen(),
+    ),
+    GoRoute(
+      path: '/staff/list',
+      builder: (context, state) => const StaffProfileListScreen(),
+    ),
+    GoRoute(
+      path: '/staff/add',
+      builder: (context, state) => const AddStaffProfileScreen(),
+    ),
+
+    // General Inventory
+    GoRoute(
+      path: '/inventory',
+      builder: (context, state) => const InventoryManagementScreen(),
+    ),
+    GoRoute(
+      path: '/inventory/list',
+      builder: (context, state) => const InventoryItemListScreen(),
+    ),
+    GoRoute(
+      path: '/inventory/add',
+      builder: (context, state) => const AddInventoryItemScreen(),
+    ),
+
+    // HR / Attendance
+    GoRoute(
+      path: '/hr',
+      builder: (context, state) => const HrManagementScreen(),
+    ),
+    GoRoute(
+      path: '/hr/attendance',
+      builder: (context, state) => const AttendanceListScreen(),
+    ),
+    GoRoute(
+      path: '/hr/attendance/add',
+      builder: (context, state) => const AddAttendanceScreen(),
+    ),
+
     // Reports
     GoRoute(
       path: '/reports',
       builder: (context, state) => const ReportsScreen(),
+    ),
+
+    // Audit Log
+    GoRoute(
+      path: '/audit',
+      builder: (context, state) => const AuditLogScreen(),
     ),
   ],
 );

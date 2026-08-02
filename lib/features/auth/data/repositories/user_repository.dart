@@ -1,4 +1,5 @@
 import '../../../../database/database_service.dart';
+import '../../../audit/data/repositories/audit_repository.dart';
 import '../../../user_management/models/user_model.dart';
 
 class UserRepository {
@@ -16,10 +17,18 @@ class UserRepository {
 
   Future<int> createUser(UserModel user) async {
     try {
-      return await _database.insert(
+      final id = await _database.insert(
         _table,
         user.toMap(),
       );
+
+      AuditRepository.instance.logAction(
+        module: 'Users',
+        action: 'Create',
+        description: 'Created user ${user.fullName} (${user.role})',
+      );
+
+      return id;
     } catch (e) {
       throw Exception(
         'Failed to create user: $e',
@@ -132,7 +141,15 @@ class UserRepository {
         return null;
       }
 
-      return UserModel.fromMap(result.first);
+      final user = UserModel.fromMap(result.first);
+
+      AuditRepository.instance.logAction(
+        module: 'Auth',
+        action: 'Login',
+        description: '${user.fullName} logged in',
+      );
+
+      return user;
     } catch (e) {
       throw Exception(
         'Login failed: $e',
@@ -168,7 +185,7 @@ class UserRepository {
     }
 
     try {
-      return await _database.update(
+      final rows = await _database.update(
         _table,
         user.toMap(),
         'id = ?',
@@ -176,6 +193,16 @@ class UserRepository {
           user.id,
         ],
       );
+
+      if (rows > 0) {
+        AuditRepository.instance.logAction(
+          module: 'Users',
+          action: 'Update',
+          description: 'Updated user ${user.fullName}',
+        );
+      }
+
+      return rows;
     } catch (e) {
       throw Exception(
         'Failed to update user: $e',
@@ -191,11 +218,21 @@ class UserRepository {
     int id,
   ) async {
     try {
-      return await _database.delete(
+      final rows = await _database.delete(
         _table,
         'id = ?',
         [id],
       );
+
+      if (rows > 0) {
+        AuditRepository.instance.logAction(
+          module: 'Users',
+          action: 'Delete',
+          description: 'Deleted user (id: $id)',
+        );
+      }
+
+      return rows;
     } catch (e) {
       throw Exception(
         'Failed to delete user: $e',

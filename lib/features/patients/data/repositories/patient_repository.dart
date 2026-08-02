@@ -1,4 +1,5 @@
 import '../../../../database/database_service.dart';
+import '../../../audit/data/repositories/audit_repository.dart';
 import '../../models/patient_model.dart';
 
 class PatientRepository {
@@ -16,10 +17,18 @@ class PatientRepository {
 
   Future<int> createPatient(PatientModel patient) async {
     try {
-      return await _database.insert(
+      final id = await _database.insert(
         _table,
         patient.toMap(),
       );
+
+      AuditRepository.instance.logAction(
+        module: 'Patients',
+        action: 'Create',
+        description: 'Registered patient ${patient.fullName} (${patient.uhid})',
+      );
+
+      return id;
     } catch (e) {
       throw Exception('Failed to register patient: $e');
     }
@@ -139,12 +148,22 @@ class PatientRepository {
     }
 
     try {
-      return await _database.update(
+      final rows = await _database.update(
         _table,
         patient.toMap(),
         'id = ?',
         [patient.id],
       );
+
+      if (rows > 0) {
+        AuditRepository.instance.logAction(
+          module: 'Patients',
+          action: 'Update',
+          description: 'Updated patient ${patient.fullName} (${patient.uhid})',
+        );
+      }
+
+      return rows;
     } catch (e) {
       throw Exception('Failed to update patient: $e');
     }
@@ -156,11 +175,21 @@ class PatientRepository {
 
   Future<int> deletePatient(int id) async {
     try {
-      return await _database.delete(
+      final rows = await _database.delete(
         _table,
         'id = ?',
         [id],
       );
+
+      if (rows > 0) {
+        AuditRepository.instance.logAction(
+          module: 'Patients',
+          action: 'Delete',
+          description: 'Deleted patient (id: $id)',
+        );
+      }
+
+      return rows;
     } catch (e) {
       throw Exception('Failed to delete patient: $e');
     }

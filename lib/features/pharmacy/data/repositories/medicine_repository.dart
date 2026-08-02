@@ -1,4 +1,5 @@
 import '../../../../database/database_service.dart';
+import '../../../audit/data/repositories/audit_repository.dart';
 import '../../models/medicine_model.dart';
 
 class MedicineRepository {
@@ -16,7 +17,15 @@ class MedicineRepository {
 
   Future<int> createMedicine(MedicineModel medicine) async {
     try {
-      return await _database.insert(_table, medicine.toMap());
+      final id = await _database.insert(_table, medicine.toMap());
+
+      AuditRepository.instance.logAction(
+        module: 'Pharmacy',
+        action: 'Create',
+        description: 'Added medicine ${medicine.name} (stock: ${medicine.stockQuantity})',
+      );
+
+      return id;
     } catch (e) {
       throw Exception('Failed to add medicine: $e');
     }
@@ -92,12 +101,22 @@ class MedicineRepository {
     }
 
     try {
-      return await _database.update(
+      final rows = await _database.update(
         _table,
         medicine.toMap(),
         'id = ?',
         [medicine.id],
       );
+
+      if (rows > 0) {
+        AuditRepository.instance.logAction(
+          module: 'Pharmacy',
+          action: 'Update',
+          description: 'Updated medicine ${medicine.name}',
+        );
+      }
+
+      return rows;
     } catch (e) {
       throw Exception('Failed to update medicine: $e');
     }
@@ -132,7 +151,17 @@ class MedicineRepository {
 
   Future<int> deleteMedicine(int id) async {
     try {
-      return await _database.delete(_table, 'id = ?', [id]);
+      final rows = await _database.delete(_table, 'id = ?', [id]);
+
+      if (rows > 0) {
+        AuditRepository.instance.logAction(
+          module: 'Pharmacy',
+          action: 'Delete',
+          description: 'Deleted medicine (id: $id)',
+        );
+      }
+
+      return rows;
     } catch (e) {
       throw Exception('Failed to delete medicine: $e');
     }

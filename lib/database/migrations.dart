@@ -222,6 +222,104 @@ class DatabaseMigrations {
     await db.execute('''
       CREATE INDEX idx_lab_tests_patient ON lab_tests(patient_id)
     ''');
+
+    // ==========================================================
+    // Staff Profiles Table (Doctor / Nursing clinical profiles)
+    // ==========================================================
+
+    await db.execute('''
+      CREATE TABLE staff_profiles(
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        user_id INTEGER NOT NULL UNIQUE,
+        staff_name TEXT NOT NULL,
+        role TEXT NOT NULL,
+        specialization TEXT NOT NULL,
+        department TEXT NOT NULL,
+        qualification TEXT,
+        license_number TEXT,
+        experience_years INTEGER,
+        shift_timing TEXT NOT NULL,
+        consultation_fee REAL NOT NULL DEFAULT 0,
+        is_available INTEGER NOT NULL DEFAULT 1,
+        notes TEXT,
+        created_at TEXT NOT NULL,
+        updated_at TEXT NOT NULL,
+        FOREIGN KEY (user_id) REFERENCES users (id)
+      )
+    ''');
+
+    // ==========================================================
+    // Inventory Items Table (General / non-pharmacy assets)
+    // ==========================================================
+
+    await db.execute('''
+      CREATE TABLE inventory_items(
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        item_name TEXT NOT NULL,
+        category TEXT NOT NULL,
+        department TEXT NOT NULL,
+        quantity INTEGER NOT NULL DEFAULT 0,
+        unit TEXT NOT NULL,
+        purchase_date TEXT,
+        purchase_price REAL,
+        supplier TEXT,
+        condition_status TEXT NOT NULL,
+        warranty_expiry TEXT,
+        serial_number TEXT,
+        notes TEXT,
+        is_active INTEGER NOT NULL DEFAULT 1,
+        created_at TEXT NOT NULL,
+        updated_at TEXT NOT NULL
+      )
+    ''');
+
+    await db.execute('''
+      CREATE INDEX idx_inventory_items_name ON inventory_items(item_name)
+    ''');
+
+    // ==========================================================
+    // Attendance Table (HR / Staff Management)
+    // ==========================================================
+
+    await db.execute('''
+      CREATE TABLE attendance(
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        user_id INTEGER NOT NULL,
+        staff_name TEXT NOT NULL,
+        role TEXT NOT NULL,
+        date TEXT NOT NULL,
+        status TEXT NOT NULL,
+        check_in_time TEXT,
+        check_out_time TEXT,
+        notes TEXT,
+        created_at TEXT NOT NULL,
+        FOREIGN KEY (user_id) REFERENCES users (id)
+      )
+    ''');
+
+    await db.execute('''
+      CREATE INDEX idx_attendance_user ON attendance(user_id)
+    ''');
+
+    // ==========================================================
+    // Audit Logs Table
+    // ==========================================================
+
+    await db.execute('''
+      CREATE TABLE audit_logs(
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        user_id INTEGER,
+        user_name TEXT NOT NULL,
+        action TEXT NOT NULL,
+        module TEXT NOT NULL,
+        description TEXT NOT NULL,
+        timestamp TEXT NOT NULL
+      )
+    ''');
+
+    await db.execute('''
+      CREATE INDEX idx_audit_logs_timestamp ON audit_logs(timestamp)
+    ''');
   }
 
   /// Future database upgrades

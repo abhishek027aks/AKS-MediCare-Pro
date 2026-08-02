@@ -1,12 +1,16 @@
 import 'package:flutter/material.dart';
 
+import '../../../attendance/screens/hr_management_screen.dart';
+import '../../../audit/screens/audit_log_screen.dart';
 import '../../../billing/screens/billing_management_screen.dart';
+import '../../../inventory/screens/inventory_management_screen.dart';
 import '../../../ipd/screens/ipd_management_screen.dart';
 import '../../../lab/screens/lab_management_screen.dart';
 import '../../../opd/screens/opd_management_screen.dart';
 import '../../../patients/screens/patient_management_screen.dart';
 import '../../../pharmacy/screens/pharmacy_management_screen.dart';
 import '../../../reports/screens/reports_screen.dart';
+import '../../../staff/screens/staff_management_screen.dart';
 
 class DashboardScreen extends StatelessWidget {
   const DashboardScreen({super.key});
@@ -24,6 +28,16 @@ class DashboardScreen extends StatelessWidget {
               Navigator.push(
                 context,
                 MaterialPageRoute(builder: (_) => const ReportsScreen()),
+              );
+            },
+          ),
+          IconButton(
+            icon: const Icon(Icons.history),
+            tooltip: 'Audit Log',
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (_) => const AuditLogScreen()),
               );
             },
           ),
@@ -115,14 +129,66 @@ class DashboardScreen extends StatelessWidget {
               },
             ),
             _DashboardTile(
-              icon: Icons.bar_chart_outlined,
-              title: 'Reports',
+              icon: Icons.badge_outlined,
+              title: 'Doctors & Nurses',
+              color: Colors.pink,
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (_) => const StaffManagementScreen(),
+                  ),
+                );
+              },
+            ),
+            _DashboardTile(
+              icon: Icons.inventory_2_outlined,
+              title: 'Inventory',
               color: Colors.brown,
               onTap: () {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
+                    builder: (_) => const InventoryManagementScreen(),
+                  ),
+                );
+              },
+            ),
+            _DashboardTile(
+              icon: Icons.groups_outlined,
+              title: 'HR',
+              color: Colors.deepOrange,
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (_) => const HrManagementScreen(),
+                  ),
+                );
+              },
+            ),
+            _DashboardTile(
+              icon: Icons.bar_chart_outlined,
+              title: 'Reports',
+              color: Colors.blueGrey,
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
                     builder: (_) => const ReportsScreen(),
+                  ),
+                );
+              },
+            ),
+            _DashboardTile(
+              icon: Icons.history,
+              title: 'Audit Log',
+              color: Colors.grey,
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (_) => const AuditLogScreen(),
                   ),
                 );
               },

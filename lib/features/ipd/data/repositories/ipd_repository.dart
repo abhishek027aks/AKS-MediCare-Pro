@@ -1,4 +1,5 @@
 import '../../../../database/database_service.dart';
+import '../../../audit/data/repositories/audit_repository.dart';
 import '../../models/ipd_admission_model.dart';
 
 class IpdRepository {
@@ -16,7 +17,15 @@ class IpdRepository {
 
   Future<int> createAdmission(IpdAdmissionModel admission) async {
     try {
-      return await _database.insert(_table, admission.toMap());
+      final id = await _database.insert(_table, admission.toMap());
+
+      AuditRepository.instance.logAction(
+        module: 'IPD',
+        action: 'Create',
+        description: 'Admitted patient ${admission.patientName} (${admission.admissionNo})',
+      );
+
+      return id;
     } catch (e) {
       throw Exception('Failed to create admission: $e');
     }
@@ -122,12 +131,22 @@ class IpdRepository {
     }
 
     try {
-      return await _database.update(
+      final rows = await _database.update(
         _table,
         admission.toMap(),
         'id = ?',
         [admission.id],
       );
+
+      if (rows > 0) {
+        AuditRepository.instance.logAction(
+          module: 'IPD',
+          action: 'Update',
+          description: 'Updated admission ${admission.admissionNo} for ${admission.patientName}',
+        );
+      }
+
+      return rows;
     } catch (e) {
       throw Exception('Failed to update admission: $e');
     }
@@ -139,7 +158,17 @@ class IpdRepository {
 
   Future<int> deleteAdmission(int id) async {
     try {
-      return await _database.delete(_table, 'id = ?', [id]);
+      final rows = await _database.delete(_table, 'id = ?', [id]);
+
+      if (rows > 0) {
+        AuditRepository.instance.logAction(
+          module: 'IPD',
+          action: 'Delete',
+          description: 'Deleted admission (id: $id)',
+        );
+      }
+
+      return rows;
     } catch (e) {
       throw Exception('Failed to delete admission: $e');
     }
