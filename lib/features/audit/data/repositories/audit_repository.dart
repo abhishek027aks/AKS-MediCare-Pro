@@ -39,6 +39,7 @@ class AuditRepository {
       await _database.insert(_table, {
         'user_id': currentUser?.id,
         'user_name': currentUser?.fullName ?? 'System',
+        'role': currentUser?.role,
         'action': action,
         'module': module,
         'description': description,

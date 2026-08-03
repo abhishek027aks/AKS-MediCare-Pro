@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../../../core/helpers/role_helper.dart';
 import '../models/user_model.dart';
 
 class UserForm extends StatefulWidget {
@@ -32,18 +33,9 @@ class _UserFormState extends State<UserForm> {
 
   bool _isActive = true;
 
-  String _selectedRole = 'Receptionist';
+  String _selectedRole = RoleHelper.receptionist;
 
-  final List<String> _roles = const [
-    'Administrator',
-    'Doctor',
-    'Receptionist',
-    'Nurse',
-    'Pharmacist',
-    'Lab Technician',
-    'Accountant',
-    'Staff',
-  ];
+  final List<String> _roles = RoleHelper.allRoles;
 
   @override
   void initState() {
@@ -63,7 +55,7 @@ class _UserFormState extends State<UserForm> {
       text: user?.password ?? '',
     );
 
-    _selectedRole = user?.role ?? 'Receptionist';
+    _selectedRole = user?.role ?? RoleHelper.receptionist;
 
     _isActive = user?.isActive ?? true;
   }

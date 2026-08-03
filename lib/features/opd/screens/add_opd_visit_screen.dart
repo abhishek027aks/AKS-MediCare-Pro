@@ -2,12 +2,24 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/helpers/id_helper.dart';
+import '../../patients/models/patient_model.dart';
 import '../data/repositories/opd_repository.dart';
 import '../models/opd_visit_model.dart';
 import '../widgets/opd_visit_form.dart';
 
 class AddOpdVisitScreen extends ConsumerStatefulWidget {
-  const AddOpdVisitScreen({super.key});
+  const AddOpdVisitScreen({
+    super.key,
+    this.prefillPatient,
+    this.prefillDoctorId,
+    this.prefillDoctorName,
+  });
+
+  /// Lets another module (e.g. Appointments "Check In") hand off
+  /// directly into a pre-populated OPD visit.
+  final PatientModel? prefillPatient;
+  final int? prefillDoctorId;
+  final String? prefillDoctorName;
 
   @override
   ConsumerState<AddOpdVisitScreen> createState() => _AddOpdVisitScreenState();
@@ -55,6 +67,9 @@ class _AddOpdVisitScreenState extends ConsumerState<AddOpdVisitScreen> {
             onSave: _saveVisit,
             isLoading: _isSaving,
             onCancel: () => Navigator.pop(context),
+            prefillPatient: widget.prefillPatient,
+            prefillDoctorId: widget.prefillDoctorId,
+            prefillDoctorName: widget.prefillDoctorName,
           ),
         ),
       ),

@@ -8,7 +8,14 @@ import '../providers/auth_provider.dart';
 import '../providers/auth_state_provider.dart';
 
 class LoginScreen extends ConsumerStatefulWidget {
-  const LoginScreen({super.key});
+  const LoginScreen({super.key, this.selectedRole});
+
+  /// The role picked on the Role Selection screen, if the person
+  /// came from there. When set, the account that logs in must
+  /// actually have this role — otherwise the login is reverted and
+  /// an error shown, rather than silently letting anyone in under
+  /// whatever role they clicked.
+  final String? selectedRole;
 
   @override
   ConsumerState<LoginScreen> createState() => _LoginScreenState();
@@ -94,25 +101,45 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
 
     if (!mounted) return;
 
-    if (success) {
+    if (!success) {
+      final error = ref.read(authErrorProvider);
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Login Successful'),
+        SnackBar(
+          behavior: SnackBarBehavior.floating,
+          content: Text(error),
         ),
       );
-      context.go('/dashboard');
       return;
     }
 
-    final error =
-        ref.read(authErrorProvider);
+    // A role was picked before login — the account has to actually
+    // hold that role, or this isn't the right account for this door.
+    if (widget.selectedRole != null) {
+      final loggedInUser = ref.read(authProvider).user;
+
+      if (loggedInUser != null && loggedInUser.role != widget.selectedRole) {
+        await ref.read(authProvider.notifier).logout();
+
+        if (!mounted) return;
+
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            behavior: SnackBarBehavior.floating,
+            content: Text(
+              'This account is registered as ${loggedInUser.role}, not ${widget.selectedRole}.',
+            ),
+          ),
+        );
+        return;
+      }
+    }
 
     ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        behavior: SnackBarBehavior.floating,
-        content: Text(error),
+      const SnackBar(
+        content: Text('Login Successful'),
       ),
     );
+    context.go('/dashboard');
   }
 
   @override
@@ -177,6 +204,19 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                             color: AppColors.textSecondary,
                           ),
                         ),
+
+                        if (widget.selectedRole != null) ...[
+                          const SizedBox(height: 16),
+                          Align(
+                            alignment: Alignment.center,
+                            child: Chip(
+                              avatar: const Icon(Icons.badge_outlined, size: 18),
+                              label: Text('Logging in as ${widget.selectedRole}'),
+                              onDeleted: () => context.go('/role-selection'),
+                              deleteIcon: const Icon(Icons.close, size: 16),
+                            ),
+                          ),
+                        ],
 
                         const SizedBox(height: 32),
 

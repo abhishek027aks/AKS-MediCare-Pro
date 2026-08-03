@@ -3,6 +3,7 @@ class AuditLogModel {
     this.id,
     this.userId,
     required this.userName,
+    this.role,
     required this.action,
     required this.module,
     required this.description,
@@ -12,6 +13,7 @@ class AuditLogModel {
   final int? id;
   final int? userId;
   final String userName;
+  final String? role;
   final String action;
   final String module;
   final String description;
@@ -22,6 +24,7 @@ class AuditLogModel {
       'id': id,
       'user_id': userId,
       'user_name': userName,
+      'role': role,
       'action': action,
       'module': module,
       'description': description,
@@ -34,6 +37,7 @@ class AuditLogModel {
       id: map['id'] as int?,
       userId: map['user_id'] as int?,
       userName: map['user_name'] as String,
+      role: map['role'] as String?,
       action: map['action'] as String,
       module: map['module'] as String,
       description: map['description'] as String,

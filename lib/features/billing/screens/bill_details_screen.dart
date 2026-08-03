@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/helpers/date_helper.dart';
+import '../../../shared/services/pdf_service.dart';
 import '../models/bill_model.dart';
 import '../providers/billing_provider.dart';
 import '../widgets/delete_bill_dialog.dart';
@@ -26,7 +27,17 @@ class BillDetailsScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Bill Details'), centerTitle: true),
+      appBar: AppBar(
+        title: const Text('Bill Details'),
+        centerTitle: true,
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.print_outlined),
+            tooltip: 'Print Invoice',
+            onPressed: () => PdfService.printBill(bill),
+          ),
+        ],
+      ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16),
         child: Column(

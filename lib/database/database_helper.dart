@@ -44,4 +44,16 @@ class DatabaseHelper {
       },
     );
   }
+
+  /// Closes the current database connection and clears the cached
+  /// instance so the next [database] access reopens it from disk.
+  ///
+  /// Used by the Backup / Restore feature: the underlying .db file
+  /// must not be replaced while sqflite still holds it open.
+  Future<void> closeDatabase() async {
+    if (_database != null) {
+      await _database!.close();
+      _database = null;
+    }
+  }
 }

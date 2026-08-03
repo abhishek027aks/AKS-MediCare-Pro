@@ -310,6 +310,7 @@ class DatabaseMigrations {
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         user_id INTEGER,
         user_name TEXT NOT NULL,
+        role TEXT,
         action TEXT NOT NULL,
         module TEXT NOT NULL,
         description TEXT NOT NULL,
@@ -319,6 +320,104 @@ class DatabaseMigrations {
 
     await db.execute('''
       CREATE INDEX idx_audit_logs_timestamp ON audit_logs(timestamp)
+    ''');
+
+    // ==========================================================
+    // Appointments Table
+    // ==========================================================
+
+    await db.execute('''
+      CREATE TABLE appointments(
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        appointment_no TEXT NOT NULL UNIQUE,
+        patient_id INTEGER NOT NULL,
+        patient_name TEXT NOT NULL,
+        patient_uhid TEXT NOT NULL,
+        doctor_id INTEGER,
+        doctor_name TEXT NOT NULL,
+        appointment_date TEXT NOT NULL,
+        appointment_time TEXT NOT NULL,
+        reason_for_visit TEXT,
+        status TEXT NOT NULL,
+        notes TEXT,
+        created_at TEXT NOT NULL,
+        updated_at TEXT NOT NULL,
+        FOREIGN KEY (patient_id) REFERENCES patients (id),
+        FOREIGN KEY (doctor_id) REFERENCES users (id)
+      )
+    ''');
+
+    await db.execute('''
+      CREATE INDEX idx_appointments_patient ON appointments(patient_id)
+    ''');
+
+    await db.execute('''
+      CREATE INDEX idx_appointments_date ON appointments(appointment_date)
+    ''');
+
+    // ==========================================================
+    // Role Permissions Table
+    // ==========================================================
+
+    await db.execute('''
+      CREATE TABLE role_permissions(
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        role TEXT NOT NULL,
+        module TEXT NOT NULL,
+        can_view INTEGER NOT NULL DEFAULT 0,
+        can_add INTEGER NOT NULL DEFAULT 0,
+        can_edit INTEGER NOT NULL DEFAULT 0,
+        can_delete INTEGER NOT NULL DEFAULT 0,
+        can_approve INTEGER NOT NULL DEFAULT 0,
+        UNIQUE(role, module)
+      )
+    ''');
+
+    // ==========================================================
+    // Delete Requests Table
+    // ==========================================================
+
+    await db.execute('''
+      CREATE TABLE delete_requests(
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        module TEXT NOT NULL,
+        record_id INTEGER NOT NULL,
+        record_label TEXT NOT NULL,
+        reason TEXT NOT NULL,
+        status TEXT NOT NULL,
+        requested_by_user_id INTEGER NOT NULL,
+        requested_by_name TEXT NOT NULL,
+        reviewed_by_user_id INTEGER,
+        reviewed_by_name TEXT,
+        reviewed_at TEXT,
+        requested_at TEXT NOT NULL,
+        FOREIGN KEY (requested_by_user_id) REFERENCES users (id)
+      )
+    ''');
+
+    await db.execute('''
+      CREATE INDEX idx_delete_requests_status ON delete_requests(status)
+    ''');
+
+    // ==========================================================
+    // Login History Table
+    // ==========================================================
+
+    await db.execute('''
+      CREATE TABLE login_history(
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        username_attempted TEXT NOT NULL,
+        user_id INTEGER,
+        user_name TEXT,
+        role TEXT,
+        device TEXT NOT NULL,
+        status TEXT NOT NULL,
+        timestamp TEXT NOT NULL
+      )
+    ''');
+
+    await db.execute('''
+      CREATE INDEX idx_login_history_timestamp ON login_history(timestamp)
     ''');
   }
 

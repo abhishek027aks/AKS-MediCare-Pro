@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/helpers/date_helper.dart';
+import '../../../shared/services/pdf_service.dart';
 import '../../billing/models/bill_item_model.dart';
 import '../../billing/screens/add_bill_screen.dart';
 import '../../patients/models/patient_model.dart';
@@ -31,7 +32,17 @@ class OpdVisitDetailsScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Visit Details'), centerTitle: true),
+      appBar: AppBar(
+        title: const Text('Visit Details'),
+        centerTitle: true,
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.print_outlined),
+            tooltip: 'Print Prescription',
+            onPressed: () => PdfService.printPrescription(visit),
+          ),
+        ],
+      ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16),
         child: Column(

@@ -70,6 +70,17 @@ class IdHelper {
     );
   }
 
+  /// Generate an Appointment Number.
+  ///
+  /// Format: APT-YY-000001
+  static Future<String> generateAppointmentNumber() {
+    return _generateSequentialId(
+      prefix: 'APT',
+      table: 'appointments',
+      column: 'appointment_no',
+    );
+  }
+
   /// Generic sequential ID generator shared by every module.
   ///
   /// Queries the row count of [table] to derive the next sequence

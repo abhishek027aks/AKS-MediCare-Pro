@@ -15,9 +15,15 @@ class OpdVisitForm extends StatefulWidget {
     required this.onSave,
     this.onCancel,
     this.isLoading = false,
+    this.prefillPatient,
+    this.prefillDoctorId,
+    this.prefillDoctorName,
   });
 
   final OpdVisitModel? initialVisit;
+  final PatientModel? prefillPatient;
+  final int? prefillDoctorId;
+  final String? prefillDoctorName;
   final ValueChanged<OpdVisitModel> onSave;
   final VoidCallback? onCancel;
   final bool isLoading;
@@ -61,8 +67,8 @@ class _OpdVisitFormState extends State<OpdVisitForm> {
         TextEditingController(text: visit?.prescription ?? '');
     _notesController = TextEditingController(text: visit?.notes ?? '');
 
-    _doctorId = visit?.doctorId;
-    _doctorName = visit?.doctorName ?? '';
+    _doctorId = visit?.doctorId ?? widget.prefillDoctorId;
+    _doctorName = visit?.doctorName ?? widget.prefillDoctorName ?? '';
     _visitDate = visit?.visitDate ?? DateTime.now();
     _followUpDate = visit?.followUpDate;
     _visitType = visit?.visitType ?? OpdHelper.visitTypes.first;
@@ -79,6 +85,8 @@ class _OpdVisitFormState extends State<OpdVisitForm> {
         createdAt: DateTime.now(),
         updatedAt: DateTime.now(),
       );
+    } else {
+      _selectedPatient = widget.prefillPatient;
     }
   }
 

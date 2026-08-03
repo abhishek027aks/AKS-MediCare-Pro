@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/helpers/date_helper.dart';
 import '../../../core/helpers/patient_helper.dart';
+import '../../../shared/services/pdf_service.dart';
 import '../models/patient_model.dart';
 import '../providers/patient_provider.dart';
 import '../widgets/delete_patient_dialog.dart';
@@ -22,6 +23,13 @@ class PatientDetailsScreen extends ConsumerWidget {
       appBar: AppBar(
         title: const Text('Patient Details'),
         centerTitle: true,
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.badge_outlined),
+            tooltip: 'Print ID Card',
+            onPressed: () => PdfService.printPatientIdCard(patient),
+          ),
+        ],
       ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16),

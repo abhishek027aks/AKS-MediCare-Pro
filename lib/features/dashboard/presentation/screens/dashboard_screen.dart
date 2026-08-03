@@ -1,203 +1,184 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../../../core/helpers/role_helper.dart';
+import '../../../appointments/screens/appointment_management_screen.dart';
 import '../../../attendance/screens/hr_management_screen.dart';
 import '../../../audit/screens/audit_log_screen.dart';
+import '../../../auth/presentation/providers/auth_state_provider.dart';
 import '../../../billing/screens/billing_management_screen.dart';
+import '../../../delete_requests/providers/delete_request_provider.dart';
+import '../../../delete_requests/screens/delete_request_list_screen.dart';
 import '../../../inventory/screens/inventory_management_screen.dart';
 import '../../../ipd/screens/ipd_management_screen.dart';
 import '../../../lab/screens/lab_management_screen.dart';
+import '../../../login_history/screens/login_history_screen.dart';
+import '../../../notifications/screens/notifications_screen.dart';
 import '../../../opd/screens/opd_management_screen.dart';
 import '../../../patients/screens/patient_management_screen.dart';
+import '../../../permissions/providers/permission_provider.dart';
+import '../../../permissions/screens/permissions_screen.dart';
 import '../../../pharmacy/screens/pharmacy_management_screen.dart';
+import '../../../reminders/screens/reminders_screen.dart';
 import '../../../reports/screens/reports_screen.dart';
+import '../../../settings/screens/settings_screen.dart';
 import '../../../staff/screens/staff_management_screen.dart';
 
-class DashboardScreen extends StatelessWidget {
+class DashboardScreen extends ConsumerWidget {
   const DashboardScreen({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final currentUser = ref.watch(currentUserProvider);
+    final permissions = ref.watch(currentUserPermissionsProvider.notifier);
+    final isPrivileged = RoleHelper.isPrivileged(currentUser?.role);
+    final pendingDeleteRequests = ref.watch(deleteRequestProvider).pendingCount;
+
+    bool canView(String module) => isPrivileged || permissions.can(module, action: 'view');
+
+    final allTiles = <_TileSpec>[
+      _TileSpec('Patients', Icons.personal_injury_outlined, Colors.teal, const PatientManagementScreen()),
+      _TileSpec('Appointments', Icons.event_available_outlined, Colors.blueAccent, const AppointmentManagementScreen()),
+      _TileSpec('OPD', Icons.local_hospital_outlined, Colors.blue, const OpdManagementScreen()),
+      _TileSpec('IPD', Icons.bed_outlined, Colors.deepPurple, const IpdManagementScreen()),
+      _TileSpec('Laboratory', Icons.biotech_outlined, Colors.cyan, const LabManagementScreen()),
+      _TileSpec('Billing', Icons.receipt_long_outlined, Colors.indigo, const BillingManagementScreen()),
+      _TileSpec('Pharmacy', Icons.medication_outlined, Colors.green, const PharmacyManagementScreen()),
+      _TileSpec('Staff', Icons.badge_outlined, Colors.pink, const StaffManagementScreen(), label: 'Doctors & Nurses'),
+      _TileSpec('Inventory', Icons.inventory_2_outlined, Colors.brown, const InventoryManagementScreen()),
+      _TileSpec('HR', Icons.groups_outlined, Colors.deepOrange, const HrManagementScreen()),
+      _TileSpec('Reports', Icons.bar_chart_outlined, Colors.blueGrey, const ReportsScreen()),
+    ];
+
+    final visibleTiles = allTiles.where((tile) => canView(tile.module)).toList();
+
     return Scaffold(
       appBar: AppBar(
         title: const Text('Dashboard'),
         actions: [
           IconButton(
-            icon: const Icon(Icons.bar_chart_outlined),
-            tooltip: 'Reports',
-            onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (_) => const ReportsScreen()),
-              );
-            },
+            icon: const Icon(Icons.notifications_none),
+            tooltip: 'Reminders',
+            onPressed: () => Navigator.push(
+              context,
+              MaterialPageRoute(builder: (_) => const RemindersScreen()),
+            ),
           ),
+          Stack(
+            alignment: Alignment.center,
+            children: [
+              IconButton(
+                icon: const Icon(Icons.campaign_outlined),
+                tooltip: 'Notifications',
+                onPressed: () => Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (_) => const NotificationsScreen()),
+                ),
+              ),
+              if (pendingDeleteRequests > 0)
+                Positioned(
+                  top: 8,
+                  right: 8,
+                  child: Container(
+                    padding: const EdgeInsets.all(3),
+                    decoration: const BoxDecoration(color: Colors.red, shape: BoxShape.circle),
+                    child: Text(
+                      '$pendingDeleteRequests',
+                      style: const TextStyle(color: Colors.white, fontSize: 9),
+                    ),
+                  ),
+                ),
+            ],
+          ),
+          if (isPrivileged) ...[
+            IconButton(
+              icon: const Icon(Icons.admin_panel_settings_outlined),
+              tooltip: 'Roles & Permissions',
+              onPressed: () => Navigator.push(
+                context,
+                MaterialPageRoute(builder: (_) => const PermissionsScreen()),
+              ),
+            ),
+            IconButton(
+              icon: const Icon(Icons.delete_sweep_outlined),
+              tooltip: 'Delete Requests',
+              onPressed: () => Navigator.push(
+                context,
+                MaterialPageRoute(builder: (_) => const DeleteRequestListScreen()),
+              ),
+            ),
+            IconButton(
+              icon: const Icon(Icons.history_edu_outlined),
+              tooltip: 'Login History',
+              onPressed: () => Navigator.push(
+                context,
+                MaterialPageRoute(builder: (_) => const LoginHistoryScreen()),
+              ),
+            ),
+          ],
           IconButton(
             icon: const Icon(Icons.history),
             tooltip: 'Audit Log',
-            onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (_) => const AuditLogScreen()),
-              );
-            },
+            onPressed: () => Navigator.push(
+              context,
+              MaterialPageRoute(builder: (_) => const AuditLogScreen()),
+            ),
+          ),
+          IconButton(
+            icon: const Icon(Icons.settings_outlined),
+            tooltip: 'Settings',
+            onPressed: () => Navigator.push(
+              context,
+              MaterialPageRoute(builder: (_) => const SettingsScreen()),
+            ),
           ),
         ],
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(16),
-        child: GridView.count(
-          crossAxisCount: 2,
-          crossAxisSpacing: 16,
-          mainAxisSpacing: 16,
-          children: [
-            _DashboardTile(
-              icon: Icons.personal_injury_outlined,
-              title: 'Patients',
-              color: Colors.teal,
-              onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (_) => const PatientManagementScreen(),
-                  ),
-                );
-              },
+      body: visibleTiles.isEmpty
+          ? const Center(
+              child: Padding(
+                padding: EdgeInsets.all(24),
+                child: Text(
+                  'No modules are visible for your role yet.\nAsk an administrator to grant access from Roles & Permissions.',
+                  textAlign: TextAlign.center,
+                ),
+              ),
+            )
+          : Padding(
+              padding: const EdgeInsets.all(16),
+              child: GridView.count(
+                crossAxisCount: 2,
+                crossAxisSpacing: 16,
+                mainAxisSpacing: 16,
+                children: visibleTiles
+                    .map(
+                      (tile) => _DashboardTile(
+                        icon: tile.icon,
+                        title: tile.label ?? tile.module,
+                        color: tile.color,
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(builder: (_) => tile.screen),
+                          );
+                        },
+                      ),
+                    )
+                    .toList(),
+              ),
             ),
-            _DashboardTile(
-              icon: Icons.local_hospital_outlined,
-              title: 'OPD',
-              color: Colors.blue,
-              onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (_) => const OpdManagementScreen(),
-                  ),
-                );
-              },
-            ),
-            _DashboardTile(
-              icon: Icons.bed_outlined,
-              title: 'IPD',
-              color: Colors.deepPurple,
-              onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (_) => const IpdManagementScreen(),
-                  ),
-                );
-              },
-            ),
-            _DashboardTile(
-              icon: Icons.biotech_outlined,
-              title: 'Laboratory',
-              color: Colors.cyan,
-              onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (_) => const LabManagementScreen(),
-                  ),
-                );
-              },
-            ),
-            _DashboardTile(
-              icon: Icons.receipt_long_outlined,
-              title: 'Billing',
-              color: Colors.indigo,
-              onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (_) => const BillingManagementScreen(),
-                  ),
-                );
-              },
-            ),
-            _DashboardTile(
-              icon: Icons.medication_outlined,
-              title: 'Pharmacy',
-              color: Colors.green,
-              onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (_) => const PharmacyManagementScreen(),
-                  ),
-                );
-              },
-            ),
-            _DashboardTile(
-              icon: Icons.badge_outlined,
-              title: 'Doctors & Nurses',
-              color: Colors.pink,
-              onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (_) => const StaffManagementScreen(),
-                  ),
-                );
-              },
-            ),
-            _DashboardTile(
-              icon: Icons.inventory_2_outlined,
-              title: 'Inventory',
-              color: Colors.brown,
-              onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (_) => const InventoryManagementScreen(),
-                  ),
-                );
-              },
-            ),
-            _DashboardTile(
-              icon: Icons.groups_outlined,
-              title: 'HR',
-              color: Colors.deepOrange,
-              onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (_) => const HrManagementScreen(),
-                  ),
-                );
-              },
-            ),
-            _DashboardTile(
-              icon: Icons.bar_chart_outlined,
-              title: 'Reports',
-              color: Colors.blueGrey,
-              onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (_) => const ReportsScreen(),
-                  ),
-                );
-              },
-            ),
-            _DashboardTile(
-              icon: Icons.history,
-              title: 'Audit Log',
-              color: Colors.grey,
-              onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (_) => const AuditLogScreen(),
-                  ),
-                );
-              },
-            ),
-          ],
-        ),
-      ),
     );
   }
+}
+
+class _TileSpec {
+  const _TileSpec(this.module, this.icon, this.color, this.screen, {this.label});
+
+  final String module;
+  final IconData icon;
+  final Color color;
+  final Widget screen;
+  final String? label;
 }
 
 class _DashboardTile extends StatelessWidget {

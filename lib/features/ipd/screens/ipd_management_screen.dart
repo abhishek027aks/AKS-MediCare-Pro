@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import 'add_ipd_admission_screen.dart';
 import 'ipd_admission_list_screen.dart';
+import 'ward_occupancy_screen.dart';
 
 class IpdManagementScreen extends StatelessWidget {
   const IpdManagementScreen({super.key});
@@ -45,6 +46,15 @@ class IpdManagementScreen extends StatelessWidget {
                     onTap: () => Navigator.push(
                       context,
                       MaterialPageRoute(builder: (_) => const AddIpdAdmissionScreen()),
+                    ),
+                  ),
+                  _DashboardCard(
+                    icon: Icons.meeting_room_outlined,
+                    title: 'Ward Occupancy',
+                    color: Colors.orange,
+                    onTap: () => Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (_) => const WardOccupancyScreen()),
                     ),
                   ),
                 ],

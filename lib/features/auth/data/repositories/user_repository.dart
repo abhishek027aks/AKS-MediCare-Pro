@@ -1,5 +1,6 @@
 import '../../../../database/database_service.dart';
 import '../../../audit/data/repositories/audit_repository.dart';
+import '../../../login_history/data/repositories/login_history_repository.dart';
 import '../../../user_management/models/user_model.dart';
 
 class UserRepository {
@@ -138,6 +139,10 @@ class UserRepository {
       );
 
       if (result.isEmpty) {
+        LoginHistoryRepository.instance.recordAttempt(
+          usernameAttempted: username,
+          success: false,
+        );
         return null;
       }
 
@@ -147,6 +152,14 @@ class UserRepository {
         module: 'Auth',
         action: 'Login',
         description: '${user.fullName} logged in',
+      );
+
+      LoginHistoryRepository.instance.recordAttempt(
+        usernameAttempted: username,
+        userId: user.id,
+        userName: user.fullName,
+        role: user.role,
+        success: true,
       );
 
       return user;

@@ -140,7 +140,7 @@ class _AuditLogScreenState extends ConsumerState<AuditLogScreen> {
                             ),
                             title: Text(log.description),
                             subtitle: Text(
-                              '${log.userName}  •  ${log.module}  •  ${AppDateHelper.formatDateTime(log.timestamp)}',
+                              '${log.userName}${log.role != null ? " (${log.role})" : ""}  •  ${log.module}  •  ${AppDateHelper.formatDateTime(log.timestamp)}',
                             ),
                             trailing: Chip(
                               backgroundColor: _actionColor(log.action).withValues(alpha: 0.15),
