@@ -1,7 +1,10 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/helpers/patient_helper.dart';
+import '../../../shared/widgets/export_button.dart';
 import '../models/patient_model.dart';
 import '../providers/patient_provider.dart';
 import '../widgets/delete_patient_dialog.dart';
@@ -111,6 +114,25 @@ class _PatientListScreenState extends ConsumerState<PatientListScreen> {
       appBar: AppBar(
         title: const Text('Patients'),
         actions: [
+          ExportButton(
+            baseName: 'patients',
+            sheetName: 'Patients',
+            headers: const [
+              'UHID', 'Name', 'Gender', 'Age', 'Blood Group', 'Mobile', 'City', 'Active',
+            ],
+            rowsBuilder: () => filteredPatients
+                .map((p) => [
+                      p.uhid,
+                      p.fullName,
+                      p.gender,
+                      p.age,
+                      p.bloodGroup ?? '',
+                      p.mobile,
+                      p.city ?? '',
+                      p.isActive ? 'Yes' : 'No',
+                    ])
+                .toList(),
+          ),
           IconButton(
             icon: const Icon(Icons.filter_list),
             onPressed: () => _showFilterSheet(patients),
@@ -226,11 +248,16 @@ class _PatientListScreenState extends ConsumerState<PatientListScreen> {
                                 children: [
                                   CircleAvatar(
                                     radius: 28,
-                                    child: Text(
-                                      PatientHelper.getInitials(
-                                        patient.fullName,
-                                      ),
-                                    ),
+                                    backgroundImage: patient.photoPath != null
+                                        ? FileImage(File(patient.photoPath!))
+                                        : null,
+                                    child: patient.photoPath == null
+                                        ? Text(
+                                            PatientHelper.getInitials(
+                                              patient.fullName,
+                                            ),
+                                          )
+                                        : null,
                                   ),
                                   const SizedBox(width: 16),
                                   Expanded(

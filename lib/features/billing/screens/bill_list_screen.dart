@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/helpers/date_helper.dart';
+import '../../../shared/widgets/export_button.dart';
 import '../models/bill_model.dart';
 import '../providers/billing_provider.dart';
 import '../widgets/delete_bill_dialog.dart';
@@ -58,7 +59,31 @@ class _BillListScreenState extends ConsumerState<BillListScreen> {
     final totalOutstanding = bills.fold<double>(0, (sum, b) => sum + b.balanceAmount);
 
     return Scaffold(
-      appBar: AppBar(title: const Text('Billing')),
+      appBar: AppBar(
+        title: const Text('Billing'),
+        actions: [
+          ExportButton(
+            baseName: 'bills',
+            sheetName: 'Bills',
+            headers: const [
+              'Invoice No', 'Patient', 'UHID', 'Type', 'Date', 'Total', 'Paid', 'Balance', 'Status',
+            ],
+            rowsBuilder: () => filtered
+                .map((b) => [
+                      b.invoiceNo,
+                      b.patientName,
+                      b.patientUhid,
+                      b.billType,
+                      AppDateHelper.formatDate(b.billDate),
+                      b.totalAmount.toStringAsFixed(2),
+                      b.paidAmount.toStringAsFixed(2),
+                      b.balanceAmount.toStringAsFixed(2),
+                      b.paymentStatus,
+                    ])
+                .toList(),
+          ),
+        ],
+      ),
       floatingActionButton: FloatingActionButton.extended(
         onPressed: () async {
           final result = await Navigator.push<bool>(

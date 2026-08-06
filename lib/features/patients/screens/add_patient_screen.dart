@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/helpers/id_helper.dart';
+import '../../../shared/widgets/unsaved_changes_guard.dart';
 import '../data/repositories/patient_repository.dart';
 import '../models/patient_model.dart';
 import '../widgets/patient_form.dart';
@@ -15,6 +16,7 @@ class AddPatientScreen extends ConsumerStatefulWidget {
 
 class _AddPatientScreenState extends ConsumerState<AddPatientScreen> {
   bool _isSaving = false;
+  bool _hasInteracted = false;
 
   Future<void> _savePatient(PatientModel patient) async {
     try {
@@ -35,6 +37,8 @@ class _AddPatientScreenState extends ConsumerState<AddPatientScreen> {
       await repository.createPatient(patient.copyWith(uhid: uhid));
 
       if (!mounted) return;
+
+      _hasInteracted = false; // saved — nothing left to lose on exit
 
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
@@ -66,15 +70,24 @@ class _AddPatientScreenState extends ConsumerState<AddPatientScreen> {
         title: const Text('Patient Registration'),
         centerTitle: true,
       ),
-      body: SafeArea(
-        child: SingleChildScrollView(
-          padding: const EdgeInsets.all(16),
-          child: PatientForm(
-            onSave: _savePatient,
-            isLoading: _isSaving,
-            onCancel: () {
-              Navigator.pop(context);
+      body: UnsavedChangesGuard(
+        hasUnsavedChanges: () => _hasInteracted && !_isSaving,
+        child: SafeArea(
+          child: Listener(
+            behavior: HitTestBehavior.translucent,
+            onPointerDown: (_) {
+              if (!_hasInteracted) setState(() => _hasInteracted = true);
             },
+            child: SingleChildScrollView(
+              padding: const EdgeInsets.all(16),
+              child: PatientForm(
+                onSave: _savePatient,
+                isLoading: _isSaving,
+                onCancel: () {
+                  Navigator.pop(context);
+                },
+              ),
+            ),
           ),
         ),
       ),

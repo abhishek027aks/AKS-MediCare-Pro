@@ -21,6 +21,9 @@ class PatientModel {
     this.emergencyContactNumber,
     this.referredBy,
     this.notes,
+    this.photoPath,
+    this.branchId,
+    this.branchName,
     this.isActive = true,
     required this.createdAt,
     required this.updatedAt,
@@ -45,6 +48,9 @@ class PatientModel {
   final String? emergencyContactNumber;
   final String? referredBy;
   final String? notes;
+  final String? photoPath;
+  final int? branchId;
+  final String? branchName;
   final bool isActive;
   final DateTime createdAt;
   final DateTime updatedAt;
@@ -72,6 +78,9 @@ class PatientModel {
     String? emergencyContactNumber,
     String? referredBy,
     String? notes,
+    String? photoPath,
+    int? branchId,
+    String? branchName,
     bool? isActive,
     DateTime? createdAt,
     DateTime? updatedAt,
@@ -98,6 +107,9 @@ class PatientModel {
           emergencyContactNumber ?? this.emergencyContactNumber,
       referredBy: referredBy ?? this.referredBy,
       notes: notes ?? this.notes,
+      photoPath: photoPath ?? this.photoPath,
+      branchId: branchId ?? this.branchId,
+      branchName: branchName ?? this.branchName,
       isActive: isActive ?? this.isActive,
       createdAt: createdAt ?? this.createdAt,
       updatedAt: updatedAt ?? this.updatedAt,
@@ -125,6 +137,9 @@ class PatientModel {
       'emergency_contact_number': emergencyContactNumber,
       'referred_by': referredBy,
       'notes': notes,
+      'photo_path': photoPath,
+      'branch_id': branchId,
+      'branch_name': branchName,
       'is_active': isActive ? 1 : 0,
       'created_at': createdAt.toIso8601String(),
       'updated_at': updatedAt.toIso8601String(),
@@ -152,6 +167,9 @@ class PatientModel {
       emergencyContactNumber: map['emergency_contact_number'] as String?,
       referredBy: map['referred_by'] as String?,
       notes: map['notes'] as String?,
+      photoPath: map['photo_path'] as String?,
+      branchId: map['branch_id'] as int?,
+      branchName: map['branch_name'] as String?,
       isActive: (map['is_active'] as int? ?? 1) == 1,
       createdAt: DateTime.parse(map['created_at'] as String),
       updatedAt: DateTime.parse(map['updated_at'] as String),
@@ -201,6 +219,9 @@ PatientModel(
             emergencyContactNumber == other.emergencyContactNumber &&
             referredBy == other.referredBy &&
             notes == other.notes &&
+            photoPath == other.photoPath &&
+            branchId == other.branchId &&
+            branchName == other.branchName &&
             isActive == other.isActive &&
             createdAt == other.createdAt &&
             updatedAt == other.updatedAt;
@@ -227,6 +248,9 @@ PatientModel(
         emergencyContactNumber,
         referredBy,
         notes,
+        photoPath,
+        branchId,
+        branchName,
         isActive,
         createdAt,
         updatedAt,

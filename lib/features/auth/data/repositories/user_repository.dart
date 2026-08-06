@@ -266,6 +266,7 @@ class UserRepository {
         _table,
         {
           'password': password,
+          'must_change_password': 0,
         },
         'id = ?',
         [
@@ -280,8 +281,39 @@ class UserRepository {
   }
 
   // ============================
-  // ACTIVATE / DEACTIVATE USER
+  // RESET PASSWORD (admin action — forces a change on next login)
   // ============================
+
+  Future<int> resetPassword({
+    required int userId,
+    required String temporaryPassword,
+  }) async {
+    try {
+      final rows = await _database.update(
+        _table,
+        {
+          'password': temporaryPassword,
+          'must_change_password': 1,
+        },
+        'id = ?',
+        [userId],
+      );
+
+      if (rows > 0) {
+        AuditRepository.instance.logAction(
+          module: 'Users',
+          action: 'Update',
+          description: 'Reset password for user (id: $userId)',
+        );
+      }
+
+      return rows;
+    } catch (e) {
+      throw Exception('Failed to reset password: $e');
+    }
+  }
+
+
 
   Future<int> setUserStatus({
     required int userId,

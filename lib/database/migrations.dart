@@ -16,7 +16,11 @@ class DatabaseMigrations {
         username TEXT NOT NULL UNIQUE,
         password TEXT NOT NULL,
         role TEXT NOT NULL,
+        department TEXT,
+        branch_id INTEGER,
+        branch_name TEXT,
         is_active INTEGER NOT NULL DEFAULT 1,
+        must_change_password INTEGER NOT NULL DEFAULT 0,
         created_at TEXT NOT NULL
       )
     ''');
@@ -46,6 +50,9 @@ class DatabaseMigrations {
         emergency_contact_number TEXT,
         referred_by TEXT,
         notes TEXT,
+        photo_path TEXT,
+        branch_id INTEGER,
+        branch_name TEXT,
         is_active INTEGER NOT NULL DEFAULT 1,
         created_at TEXT NOT NULL,
         updated_at TEXT NOT NULL
@@ -418,6 +425,40 @@ class DatabaseMigrations {
 
     await db.execute('''
       CREATE INDEX idx_login_history_timestamp ON login_history(timestamp)
+    ''');
+
+    // ==========================================================
+    // Patient Documents Table
+    // ==========================================================
+
+    await db.execute('''
+      CREATE TABLE patient_documents(
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        patient_id INTEGER NOT NULL,
+        file_path TEXT NOT NULL,
+        document_name TEXT NOT NULL,
+        uploaded_at TEXT NOT NULL,
+        FOREIGN KEY (patient_id) REFERENCES patients (id)
+      )
+    ''');
+
+    await db.execute('''
+      CREATE INDEX idx_patient_documents_patient ON patient_documents(patient_id)
+    ''');
+
+    // ==========================================================
+    // Branches Table
+    // ==========================================================
+
+    await db.execute('''
+      CREATE TABLE branches(
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        name TEXT NOT NULL,
+        address TEXT,
+        phone TEXT,
+        is_active INTEGER NOT NULL DEFAULT 1,
+        created_at TEXT NOT NULL
+      )
     ''');
   }
 

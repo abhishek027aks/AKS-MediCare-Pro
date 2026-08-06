@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -7,6 +9,7 @@ import '../../../shared/services/pdf_service.dart';
 import '../models/patient_model.dart';
 import '../providers/patient_provider.dart';
 import '../widgets/delete_patient_dialog.dart';
+import '../widgets/patient_documents_section.dart';
 import 'edit_patient_screen.dart';
 
 class PatientDetailsScreen extends ConsumerWidget {
@@ -49,14 +52,19 @@ class PatientDetailsScreen extends ConsumerWidget {
                       radius: 52,
                       backgroundColor:
                           Theme.of(context).colorScheme.primaryContainer,
-                      child: Text(
-                        PatientHelper.getInitials(patient.fullName),
-                        style: TextStyle(
-                          fontSize: 28,
-                          fontWeight: FontWeight.bold,
-                          color: Theme.of(context).colorScheme.primary,
-                        ),
-                      ),
+                      backgroundImage: patient.photoPath != null
+                          ? FileImage(File(patient.photoPath!))
+                          : null,
+                      child: patient.photoPath == null
+                          ? Text(
+                              PatientHelper.getInitials(patient.fullName),
+                              style: TextStyle(
+                                fontSize: 28,
+                                fontWeight: FontWeight.bold,
+                                color: Theme.of(context).colorScheme.primary,
+                              ),
+                            )
+                          : null,
                     ),
                     const SizedBox(height: 16),
                     Text(
@@ -229,6 +237,8 @@ class PatientDetailsScreen extends ConsumerWidget {
                 ),
               ),
             ),
+            const SizedBox(height: 24),
+            PatientDocumentsSection(patientId: patient.id!),
             const SizedBox(height: 24),
             Text(
               'Actions',

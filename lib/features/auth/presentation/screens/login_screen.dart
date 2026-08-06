@@ -4,6 +4,8 @@ import 'package:go_router/go_router.dart';
 
 import '../../../../core/colors.dart';
 import '../../../../shared/widgets/app_button.dart';
+import '../../../branches/data/repositories/branch_repository.dart';
+import '../../../branches/models/branch_model.dart';
 import '../providers/auth_provider.dart';
 import '../providers/auth_state_provider.dart';
 
@@ -33,6 +35,9 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
   bool _obscurePassword = true;
   bool _rememberMe = false;
 
+  List<BranchModel> _branches = [];
+  int? _selectedBranchId;
+
   @override
   void initState() {
     super.initState();
@@ -40,6 +45,14 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _restoreSession();
     });
+
+    _loadBranches();
+  }
+
+  Future<void> _loadBranches() async {
+    final branches = await BranchRepository.instance.getActiveBranches();
+    if (!mounted) return;
+    setState(() => _branches = branches);
   }
 
   @override
@@ -132,6 +145,13 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
         );
         return;
       }
+    }
+
+    final loggedInUser = ref.read(authProvider).user;
+
+    if (loggedInUser != null && loggedInUser.mustChangePassword) {
+      context.go('/change-password');
+      return;
     }
 
     ScaffoldMessenger.of(context).showSnackBar(
@@ -257,6 +277,21 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                             ),
                           ),
                         ),
+
+                        const SizedBox(height: 16),
+
+                        if (_branches.isNotEmpty)
+                          DropdownButtonFormField<int>(
+                            initialValue: _selectedBranchId,
+                            decoration: const InputDecoration(
+                              labelText: 'Branch (optional)',
+                              prefixIcon: Icon(Icons.storefront_outlined),
+                            ),
+                            items: _branches
+                                .map((b) => DropdownMenuItem(value: b.id, child: Text(b.name)))
+                                .toList(),
+                            onChanged: (value) => setState(() => _selectedBranchId = value),
+                          ),
 
                         const SizedBox(height: 16),
 

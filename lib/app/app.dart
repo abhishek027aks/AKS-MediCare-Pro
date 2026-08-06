@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../shared/services/snackbar_service.dart';
+import '../shared/widgets/app_shell.dart';
 import 'router.dart';
 import 'theme.dart';
 
@@ -15,6 +16,10 @@ class AKSMediCareProApp extends StatelessWidget {
       theme: AppTheme.lightTheme,
       routerConfig: appRouter,
       scaffoldMessengerKey: SnackbarService.messengerKey,
+      builder: (context, child) {
+        if (child == null) return const SizedBox.shrink();
+        return AppShell(child: child);
+      },
     );
   }
 }

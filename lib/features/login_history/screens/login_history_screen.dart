@@ -2,11 +2,16 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/helpers/date_helper.dart';
+import '../../../shared/widgets/export_button.dart';
 import '../models/login_history_model.dart';
 import '../providers/login_history_provider.dart';
 
 class LoginHistoryScreen extends ConsumerStatefulWidget {
-  const LoginHistoryScreen({super.key});
+  const LoginHistoryScreen({super.key, this.initialSearchQuery});
+
+  /// Pre-fills the search box — used when opened from a specific
+  /// employee's record ("View Login History" in User Management).
+  final String? initialSearchQuery;
 
   @override
   ConsumerState<LoginHistoryScreen> createState() => _LoginHistoryScreenState();
@@ -16,6 +21,15 @@ class _LoginHistoryScreenState extends ConsumerState<LoginHistoryScreen> {
   final TextEditingController _searchController = TextEditingController();
   String _searchQuery = '';
   String _statusFilter = 'All';
+
+  @override
+  void initState() {
+    super.initState();
+    if (widget.initialSearchQuery != null) {
+      _searchQuery = widget.initialSearchQuery!;
+      _searchController.text = widget.initialSearchQuery!;
+    }
+  }
 
   @override
   void dispose() {
@@ -38,7 +52,25 @@ class _LoginHistoryScreenState extends ConsumerState<LoginHistoryScreen> {
     final failedCount = state.history.where((e) => e.status == 'Failed').length;
 
     return Scaffold(
-      appBar: AppBar(title: const Text('Login History')),
+      appBar: AppBar(
+        title: const Text('Login History'),
+        actions: [
+          ExportButton(
+            baseName: 'login_history',
+            sheetName: 'Login History',
+            headers: const ['User', 'Role', 'Device', 'Status', 'Timestamp'],
+            rowsBuilder: () => filtered
+                .map((e) => [
+                      e.userName ?? e.usernameAttempted,
+                      e.role ?? '',
+                      e.device,
+                      e.status,
+                      AppDateHelper.formatDateTime(e.timestamp),
+                    ])
+                .toList(),
+          ),
+        ],
+      ),
       body: Column(
         children: [
           if (state.isLoading) const LinearProgressIndicator(),

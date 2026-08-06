@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/helpers/date_helper.dart';
+import '../../../shared/widgets/export_button.dart';
 import '../models/audit_log_model.dart';
 import '../providers/audit_provider.dart';
 
@@ -67,7 +68,26 @@ class _AuditLogScreenState extends ConsumerState<AuditLogScreen> {
     }).toList();
 
     return Scaffold(
-      appBar: AppBar(title: const Text('Audit Log')),
+      appBar: AppBar(
+        title: const Text('Audit Log'),
+        actions: [
+          ExportButton(
+            baseName: 'audit_log',
+            sheetName: 'Audit Log',
+            headers: const ['User', 'Role', 'Action', 'Module', 'Description', 'Timestamp'],
+            rowsBuilder: () => filtered
+                .map((log) => [
+                      log.userName,
+                      log.role ?? '',
+                      log.action,
+                      log.module,
+                      log.description,
+                      AppDateHelper.formatDateTime(log.timestamp),
+                    ])
+                .toList(),
+          ),
+        ],
+      ),
       body: Column(
         children: [
           if (state.isLoading) const LinearProgressIndicator(),

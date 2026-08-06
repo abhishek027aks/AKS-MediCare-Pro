@@ -5,7 +5,11 @@ class UserModel {
     required this.username,
     required this.password,
     required this.role,
+    this.department,
+    this.branchId,
+    this.branchName,
     required this.isActive,
+    this.mustChangePassword = false,
     required this.createdAt,
   });
 
@@ -14,7 +18,11 @@ class UserModel {
   final String username;
   final String password;
   final String role;
+  final String? department;
+  final int? branchId;
+  final String? branchName;
   final bool isActive;
+  final bool mustChangePassword;
   final DateTime createdAt;
 
   UserModel copyWith({
@@ -23,7 +31,11 @@ class UserModel {
     String? username,
     String? password,
     String? role,
+    String? department,
+    int? branchId,
+    String? branchName,
     bool? isActive,
+    bool? mustChangePassword,
     DateTime? createdAt,
   }) {
     return UserModel(
@@ -32,7 +44,11 @@ class UserModel {
       username: username ?? this.username,
       password: password ?? this.password,
       role: role ?? this.role,
+      department: department ?? this.department,
+      branchId: branchId ?? this.branchId,
+      branchName: branchName ?? this.branchName,
       isActive: isActive ?? this.isActive,
+      mustChangePassword: mustChangePassword ?? this.mustChangePassword,
       createdAt: createdAt ?? this.createdAt,
     );
   }
@@ -44,7 +60,11 @@ class UserModel {
       'username': username,
       'password': password,
       'role': role,
+      'department': department,
+      'branch_id': branchId,
+      'branch_name': branchName,
       'is_active': isActive ? 1 : 0,
+      'must_change_password': mustChangePassword ? 1 : 0,
       'created_at': createdAt.toIso8601String(),
     };
   }
@@ -56,7 +76,11 @@ class UserModel {
       username: map['username'] as String,
       password: map['password'] as String,
       role: map['role'] as String,
+      department: map['department'] as String?,
+      branchId: map['branch_id'] as int?,
+      branchName: map['branch_name'] as String?,
       isActive: (map['is_active'] as int) == 1,
+      mustChangePassword: (map['must_change_password'] as int? ?? 0) == 1,
       createdAt: DateTime.parse(
         map['created_at'] as String,
       ),
@@ -79,7 +103,10 @@ UserModel(
   fullName: $fullName,
   username: $username,
   role: $role,
-  isActive: $isActive
+  department: $department,
+  branchName: $branchName,
+  isActive: $isActive,
+  mustChangePassword: $mustChangePassword
 )
 ''';
   }
@@ -93,7 +120,11 @@ UserModel(
             username == other.username &&
             password == other.password &&
             role == other.role &&
+            department == other.department &&
+            branchId == other.branchId &&
+            branchName == other.branchName &&
             isActive == other.isActive &&
+            mustChangePassword == other.mustChangePassword &&
             createdAt == other.createdAt;
   }
 
@@ -104,7 +135,11 @@ UserModel(
         username,
         password,
         role,
+        department,
+        branchId,
+        branchName,
         isActive,
+        mustChangePassword,
         createdAt,
       );
 }

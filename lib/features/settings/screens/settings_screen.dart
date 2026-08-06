@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
 import '../../sync/screens/sync_screen.dart';
+import '../../branches/screens/branch_management_screen.dart';
 import '../data/backup_service.dart';
 
 class SettingsScreen extends StatefulWidget {
@@ -220,6 +221,24 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 }).toList(),
               ),
             ),
+          const SizedBox(height: 20),
+          Text('Organization', style: Theme.of(context).textTheme.titleLarge),
+          const SizedBox(height: 12),
+          Card(
+            elevation: 0,
+            child: ListTile(
+              leading: const Icon(Icons.storefront_outlined),
+              title: const Text('Branches'),
+              subtitle: const Text('Manage hospital branches / locations'),
+              trailing: const Icon(Icons.chevron_right),
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (_) => const BranchManagementScreen()),
+                );
+              },
+            ),
+          ),
           const SizedBox(height: 20),
           Text('Network', style: Theme.of(context).textTheme.titleLarge),
           const SizedBox(height: 12),

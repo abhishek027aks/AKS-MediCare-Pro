@@ -4,10 +4,12 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../models/user_model.dart';
 import '../providers/user_provider.dart';
 
+import '../../login_history/screens/login_history_screen.dart';
+import '../widgets/delete_user_dialog.dart';
+import '../widgets/reset_password_dialog.dart';
 import 'add_user.dart';
 import 'edit_user.dart';
 import 'user_details.dart';
-import '../widgets/delete_user_dialog.dart';
 
 class UserListScreen extends ConsumerStatefulWidget {
   const UserListScreen({super.key});
@@ -309,6 +311,25 @@ class _UserListScreenState extends ConsumerState<UserListScreen> {
                                         }
                                         break;
 
+                                      case 'reset_password':
+                                        await showDialog<bool>(
+                                          context: context,
+                                          builder: (_) =>
+                                              ResetPasswordDialog(user: user),
+                                        );
+                                        break;
+
+                                      case 'login_history':
+                                        await Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                            builder: (_) => LoginHistoryScreen(
+                                              initialSearchQuery: user.username,
+                                            ),
+                                          ),
+                                        );
+                                        break;
+
                                       case 'delete':
                                         final deleted =
                                             await showDialog<bool>(
@@ -333,6 +354,14 @@ class _UserListScreenState extends ConsumerState<UserListScreen> {
                                     PopupMenuItem(
                                       value: 'edit',
                                       child: Text('Edit'),
+                                    ),
+                                    PopupMenuItem(
+                                      value: 'reset_password',
+                                      child: Text('Reset Password'),
+                                    ),
+                                    PopupMenuItem(
+                                      value: 'login_history',
+                                      child: Text('Login History'),
                                     ),
                                     PopupMenuItem(
                                       value: 'delete',

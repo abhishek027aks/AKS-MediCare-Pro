@@ -1,8 +1,11 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
 import '../../../core/helpers/patient_helper.dart';
 import '../../../core/validators.dart';
+import '../../../shared/services/patient_media_service.dart';
 import '../models/patient_model.dart';
 
 class PatientForm extends StatefulWidget {
@@ -50,6 +53,7 @@ class _PatientFormState extends State<PatientForm> {
   String? _selectedMaritalStatus;
 
   bool _isActive = true;
+  String? _photoPath;
 
   @override
   void initState() {
@@ -81,6 +85,7 @@ class _PatientFormState extends State<PatientForm> {
     _selectedBloodGroup = patient?.bloodGroup;
     _selectedMaritalStatus = patient?.maritalStatus;
     _isActive = patient?.isActive ?? true;
+    _photoPath = patient?.photoPath;
   }
 
   @override
@@ -116,6 +121,12 @@ class _PatientFormState extends State<PatientForm> {
         _dateOfBirth = picked;
       });
     }
+  }
+
+  Future<void> _pickPhoto() async {
+    final path = await PatientMediaService.pickAndSaveImage(filePrefix: 'patient');
+    if (path == null) return;
+    setState(() => _photoPath = path);
   }
 
   void _submit() {
@@ -174,6 +185,7 @@ class _PatientFormState extends State<PatientForm> {
       notes: _notesController.text.trim().isEmpty
           ? null
           : _notesController.text.trim(),
+      photoPath: _photoPath,
       isActive: _isActive,
       createdAt: widget.initialPatient?.createdAt ?? DateTime.now(),
       updatedAt: DateTime.now(),
@@ -196,9 +208,26 @@ class _PatientFormState extends State<PatientForm> {
               padding: const EdgeInsets.all(20),
               child: Column(
                 children: [
-                  const Icon(
-                    Icons.personal_injury_outlined,
-                    size: 70,
+                  InkWell(
+                    onTap: _pickPhoto,
+                    borderRadius: BorderRadius.circular(45),
+                    child: Stack(
+                      alignment: Alignment.bottomRight,
+                      children: [
+                        CircleAvatar(
+                          radius: 45,
+                          backgroundImage: _photoPath != null ? FileImage(File(_photoPath!)) : null,
+                          child: _photoPath == null
+                              ? const Icon(Icons.personal_injury_outlined, size: 44)
+                              : null,
+                        ),
+                        Container(
+                          padding: const EdgeInsets.all(4),
+                          decoration: const BoxDecoration(color: Colors.black87, shape: BoxShape.circle),
+                          child: const Icon(Icons.camera_alt, size: 14, color: Colors.white),
+                        ),
+                      ],
+                    ),
                   ),
                   const SizedBox(height: 12),
                   Text(

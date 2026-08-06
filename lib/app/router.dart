@@ -7,12 +7,14 @@ import '../features/attendance/screens/add_attendance_screen.dart';
 import '../features/attendance/screens/attendance_list_screen.dart';
 import '../features/attendance/screens/hr_management_screen.dart';
 import '../features/audit/screens/audit_log_screen.dart';
+import '../features/auth/presentation/screens/change_password_screen.dart';
 import '../features/auth/presentation/screens/login_screen.dart';
 import '../features/auth/presentation/screens/role_selection_screen.dart';
 import '../features/auth/presentation/screens/splash_screen.dart';
 import '../features/billing/screens/add_bill_screen.dart';
 import '../features/billing/screens/bill_list_screen.dart';
 import '../features/billing/screens/billing_management_screen.dart';
+import '../features/branches/screens/branch_management_screen.dart';
 import '../features/dashboard/presentation/screens/dashboard_screen.dart';
 import '../features/delete_requests/screens/delete_request_list_screen.dart';
 import '../features/inventory/screens/add_inventory_item_screen.dart';
@@ -59,6 +61,10 @@ final GoRouter appRouter = GoRouter(
     GoRoute(
       path: '/login',
       builder: (context, state) => LoginScreen(selectedRole: state.extra as String?),
+    ),
+    GoRoute(
+      path: '/change-password',
+      builder: (context, state) => const ChangePasswordScreen(),
     ),
     GoRoute(
       path: '/dashboard',
@@ -231,6 +237,12 @@ final GoRouter appRouter = GoRouter(
     GoRoute(
       path: '/permissions',
       builder: (context, state) => const PermissionsScreen(),
+    ),
+
+    // Branches
+    GoRoute(
+      path: '/branches',
+      builder: (context, state) => const BranchManagementScreen(),
     ),
 
     // Delete Requests

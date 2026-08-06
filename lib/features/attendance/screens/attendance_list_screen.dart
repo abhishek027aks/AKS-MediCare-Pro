@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 
+import '../../../shared/widgets/export_button.dart';
 import '../models/attendance_model.dart';
 import '../providers/attendance_provider.dart';
 import '../widgets/delete_attendance_dialog.dart';
@@ -59,7 +60,26 @@ class _AttendanceListScreenState extends ConsumerState<AttendanceListScreen> {
     }).toList();
 
     return Scaffold(
-      appBar: AppBar(title: const Text('Staff Attendance')),
+      appBar: AppBar(
+        title: const Text('Staff Attendance'),
+        actions: [
+          ExportButton(
+            baseName: 'attendance',
+            sheetName: 'Attendance',
+            headers: const ['Staff Name', 'Role', 'Date', 'Status', 'Check-in', 'Check-out'],
+            rowsBuilder: () => filtered
+                .map((r) => [
+                      r.staffName,
+                      r.role,
+                      DateFormat('dd/MM/yyyy').format(r.date),
+                      r.status,
+                      r.checkInTime ?? '',
+                      r.checkOutTime ?? '',
+                    ])
+                .toList(),
+          ),
+        ],
+      ),
       floatingActionButton: FloatingActionButton.extended(
         onPressed: () async {
           final result = await Navigator.push<bool>(

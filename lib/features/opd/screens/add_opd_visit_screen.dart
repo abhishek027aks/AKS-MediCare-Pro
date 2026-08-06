@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../../core/helpers/id_helper.dart';
+import '../../../shared/widgets/unsaved_changes_guard.dart';
 import '../../patients/models/patient_model.dart';
 import '../data/repositories/opd_repository.dart';
 import '../models/opd_visit_model.dart';
@@ -27,6 +28,7 @@ class AddOpdVisitScreen extends ConsumerStatefulWidget {
 
 class _AddOpdVisitScreenState extends ConsumerState<AddOpdVisitScreen> {
   bool _isSaving = false;
+  bool _hasInteracted = false;
 
   Future<void> _saveVisit(OpdVisitModel visit) async {
     setState(() => _isSaving = true);
@@ -37,6 +39,8 @@ class _AddOpdVisitScreenState extends ConsumerState<AddOpdVisitScreen> {
       await OpdRepository.instance.createVisit(visit.copyWith(visitNo: visitNo));
 
       if (!mounted) return;
+
+      _hasInteracted = false;
 
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
@@ -60,16 +64,25 @@ class _AddOpdVisitScreenState extends ConsumerState<AddOpdVisitScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: const Text('New OPD Visit'), centerTitle: true),
-      body: SafeArea(
-        child: SingleChildScrollView(
-          padding: const EdgeInsets.all(16),
-          child: OpdVisitForm(
-            onSave: _saveVisit,
-            isLoading: _isSaving,
-            onCancel: () => Navigator.pop(context),
-            prefillPatient: widget.prefillPatient,
-            prefillDoctorId: widget.prefillDoctorId,
-            prefillDoctorName: widget.prefillDoctorName,
+      body: UnsavedChangesGuard(
+        hasUnsavedChanges: () => _hasInteracted && !_isSaving,
+        child: SafeArea(
+          child: Listener(
+            behavior: HitTestBehavior.translucent,
+            onPointerDown: (_) {
+              if (!_hasInteracted) setState(() => _hasInteracted = true);
+            },
+            child: SingleChildScrollView(
+              padding: const EdgeInsets.all(16),
+              child: OpdVisitForm(
+                onSave: _saveVisit,
+                isLoading: _isSaving,
+                onCancel: () => Navigator.pop(context),
+                prefillPatient: widget.prefillPatient,
+                prefillDoctorId: widget.prefillDoctorId,
+                prefillDoctorName: widget.prefillDoctorName,
+              ),
+            ),
           ),
         ),
       ),
