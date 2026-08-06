@@ -146,6 +146,10 @@ It is designed for:
 | SQLite | Local Database |
 | Clean Architecture | Project Structure |
 | Repository Pattern | Data Layer |
+SQLite
+Offline First Architecture
+TCP Socket Networking
+JSON Serialization
 
 ---
 
@@ -256,36 +260,38 @@ flutter run
 
 # 📌 Development Progress
 
-| Module | Status |
-|---------|--------|
-| Foundation | ✅ Complete |
-| Authentication & Security | ✅ Complete |
-| User Management | ✅ Complete |
-| Dashboard | ✅ Complete |
-| Patients | ✅ Complete |
-| Doctors & Nursing | ✅ Complete |
-| OPD | ✅ Complete |
-| IPD | ✅ Complete |
-| Laboratory | ✅ Complete |
-| Radiology | 🚧 Planned |
-| Pharmacy | ✅ Complete |
-| Billing | ✅ Complete |
-| Inventory | ✅ Complete |
-| HR & Attendance | ✅ Complete |
-| Audit Logs | ✅ Complete |
-| Reports & Analytics | 🚧 In Progress |
-| Backup & Restore | ⏳ Planned |
-| LAN Synchronization | ⏳ Planned |
-| Cloud Synchronization | ⏳ Planned |
-| Notification Center | ⏳ Planned |
-| Approval Workflow | ⏳ Planned |
-| Hospital Settings | ⏳ Planned |
-| Printing System | ⏳ Planned |
-| AI Integration | ⏳ Planned |
-| Premium UI/UX | ⏳ Planned |
-| Testing & Optimization | ⏳ Planned |
-| Windows Installer | ⏳ Planned |
-| Android Production Release | ⏳ Planned |
+| Module                     | Status                             |
+| -------------------------- | ---------------------------------- |
+| Foundation                 | ✅ Complete                         |
+| Authentication & Security  | ✅ Complete                         |
+| User Management            | ✅ Complete                         |
+| Dashboard                  | 🚧 Enterprise Redesign In Progress |
+| Patients                   | ✅ Complete                         |
+| Doctor & Nursing           | ✅ Complete                         |
+| OPD                        | ✅ Complete                         |
+| IPD                        | ✅ Complete                         |
+| Laboratory                 | ✅ Complete                         |
+| Radiology                  | ⏳ Planned                          |
+| Pharmacy                   | ✅ Complete                         |
+| Billing                    | ✅ Complete                         |
+| Inventory                  | ✅ Complete                         |
+| HR & Attendance            | ✅ Complete                         |
+| Appointment Scheduling     | ✅ Complete                         |
+| Audit Logs                 | ✅ Complete                         |
+| Backup & Restore           | ✅ Complete                         |
+| Hospital Settings          | ✅ Complete                         |
+| LAN Synchronization        | 🟡 Beta (Testing Pending)          |
+| Reports & Analytics        | 🚧 In Progress                     |
+| Notification Center        | ⏳ Planned                          |
+| Approval Workflow          | ⏳ Planned                          |
+| Cloud Synchronization      | ⏳ Planned                          |
+| Printing System            | ⏳ Planned                          |
+| Barcode / QR Support       | ⏳ Planned                          |
+| Premium UI/UX              | 🚧 In Progress                     |
+| Testing & Optimization     | 🚧 In Progress                     |
+| Windows Installer          | ⏳ Planned                          |
+| Android Production Release | 🚧 In Progress                     |
+
 
 ---
 
@@ -304,7 +310,11 @@ flutter run
 | Premium UI/UX | ⏳ Planned |
 | Testing & Production | ⏳ Planned |
 
-> **Estimated Overall Completion:** **~70–75%**
+> **Estimated Overall Completion:** **90%**
+Core Features: ✅ 98%
+Enterprise Features: 🚧 70%
+Professional UI/UX: 🚧 45%
+Testing & Production: 🚧 40%
 
 # 🗺 Roadmap
 
@@ -381,7 +391,43 @@ flutter run
 - ⏳ Doctor Portal
 
 ---
+### 📅 Appointment Management
 
+- Appointment Booking
+- Doctor Schedule
+- Patient Scheduling
+- Appointment Status
+- OPD Check-in
+
+  ### 📝 Audit Logs
+
+- Login History
+- User Activity Tracking
+- Create / Update / Delete Logs
+- Secure Audit Trail
+
+  ### 💾 Backup & Restore
+
+- Database Backup
+- Database Restore
+- Offline Backup
+
+  ### 🌐 LAN Synchronization
+
+- Device to Device Sync
+- Offline Data Sharing
+- Patient Sync
+- Billing Sync
+- Inventory Sync
+
+  ### ⚙ Hospital Settings
+
+- Application Settings
+- Backup Management
+- Sync Settings
+- Database Tools
+
+  
 ### 🚀 Future Vision
 
 - 🌐 Enterprise Offline-First Hospital Management System
